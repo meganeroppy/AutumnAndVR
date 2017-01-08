@@ -3,7 +3,6 @@ using System.Collections;
 
 public class BagMove : Photon.MonoBehaviour 
 {
-
 	/// <summary>
 	/// カゴのモデルリスト
 	/// </summary>
