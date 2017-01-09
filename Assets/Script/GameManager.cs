@@ -88,10 +88,13 @@ public class GameManager : Photon.MonoBehaviour
 	/// </summary>
 	public int measureExpInterval = 25;
 
-	void Start()
+	void Awake()
 	{
 		instance = this;
+	}
 
+	void Start()
+	{
 		ResetParametersAndLoadTitleScene();
 	}
 
@@ -164,6 +167,11 @@ public class GameManager : Photon.MonoBehaviour
 	void CheckPlayersReady()
 	{
 		if( MultiPlayerManager.crews == null )
+		{
+			return;
+		}
+
+		if(  MultiPlayerManager.crews.Count < MultiPlayerManager.playerNumNeeded )
 		{
 			return;
 		}

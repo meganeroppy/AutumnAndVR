@@ -126,6 +126,11 @@ public class InfoText : Photon.MonoBehaviour {
 		switch( GameManager.instance.curStatus )
 		{
 		case GameManager.Status.BeforeStart:
+			if( PhotonNetwork.room == null )
+			{
+				return;
+			}
+
 			// ゲーム開始前
 			int playerNum = PhotonNetwork.room.playerCount;
 			if(  playerNum < MultiPlayerManager.playerNumNeeded )

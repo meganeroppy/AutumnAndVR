@@ -28,6 +28,10 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 	void Start ()
 	{
 		PhotonNetwork.ConnectUsingSettings ("0.1");
+		if( GameManager.instance.singleMode )
+		{
+			playerNumNeeded = 1;
+		}
 	}
 
 	void Update()
@@ -48,9 +52,9 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 	void OnPhotonRandomJoinFailed(){
 		//  部屋に入れなかったので自分で作る
 
-		RoomOptions options = new RoomOptions();
+		var options = new RoomOptions();
 		options.MaxPlayers = (byte)playerNumNeeded;
-		TypedLobby lobby = new TypedLobby();
+		var lobby = new TypedLobby();
 
 		PhotonNetwork.CreateRoom (roomName, options, lobby);
 	}
@@ -58,7 +62,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 	//  ルームに入れた時に呼ばれる（自分の作ったルームでも）
 	void OnJoinedRoom()
 	{
-		PhotonNetwork.Instantiate("CrewMove", Vector3.zero, Quaternion.identity, 0).GetComponent<CrewMove>();
+		PhotonNetwork.Instantiate("CrewMove", Vector3.zero, Quaternion.identity, 0);
 
 		bag = PhotonNetwork.Instantiate("Bag", Vector3.zero, Quaternion.identity, 0);
 
