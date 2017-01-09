@@ -15,17 +15,12 @@ public class Chestnut : Photon.MonoBehaviour {
 	/// <summary>
 	/// 落下スピード
 	/// </summary>
-	public float fallingSpeed = 0.05f;
+	public float fallingSpeed = 0.02f;
 
 	/// <summary>
 	/// 回転スピード
 	/// </summary>
 	public float rotationSpeed = 0.1f;
-
-	/// <summary>
-	/// 回転軸
-	/// </summary>
-	Vector3 rotAngle;
 
 	/// <summary>
 	/// 命の長さ秒
