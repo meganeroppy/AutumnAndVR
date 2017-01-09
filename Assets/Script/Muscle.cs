@@ -9,11 +9,26 @@ using DG.Tweening;
 public class Muscle : Photon.MonoBehaviour 
 {
 	public static Muscle instance;
-	public static float height; //高度
 
-	const float ascend_value = 1f; // 一回の上昇で 何M 上昇するか
-	const int ascend_cost = 1; // 何ポイントで１回上昇するか？
-	int energy = 0; // 集まったエネルギー
+	/// <summary>
+	/// 筋肉の現在高度
+	/// </summary>
+	public static float height;
+
+	/// <summary>
+	/// 一回の上昇で 何M 上昇するか
+	/// </summary>
+	const float ascend_value = 1f; 
+
+	/// <summary>
+	/// 何ポイントで１回上昇するか？
+	/// </summary>
+	const int ascend_cost = 1;
+
+	/// <summary>
+	/// 集まったエネルギー
+	/// </summary>
+	int energy = 0; 
 
 	/// <summary>
 	/// 栗がぶつかったとみなす範囲
@@ -42,6 +57,9 @@ public class Muscle : Photon.MonoBehaviour
 	/// </summary>
 	public AudioClip vo_reachUnitHeight;
 
+	/// <summary>
+	/// クリア時のテキスト
+	/// </summary>
 	public TextMesh clearText;
 
 	/// <summary>
@@ -49,6 +67,10 @@ public class Muscle : Photon.MonoBehaviour
 	/// </summary>
 	public Transform originPos;
 
+	/// <summary>
+	/// 筋肉喜び中時間の残り秒
+	/// </summary>
+	[HideInInspector]
 	public float joyTimer =0;
 
 	/// <summary>
@@ -58,8 +80,14 @@ public class Muscle : Photon.MonoBehaviour
 
 	public GameManager gm;
 
+	/// <summary>
+	/// プレイヤーポジション
+	/// </summary>
 	public Transform pos1;
 
+	/// <summary>
+	/// プレイヤーポジション２
+	/// </summary>
 	public Transform pos2;
 
 	enum VoicePat{
@@ -85,6 +113,9 @@ public class Muscle : Photon.MonoBehaviour
 	//	CheckBGMPlay();
 	}
 
+	/// <summary>
+	/// 喜び時間減少
+	/// </summary>
 	void ReduceJoyTimer()
 	{
 		if (joyTimer >= 0) {
@@ -232,6 +263,9 @@ public class Muscle : Photon.MonoBehaviour
 		myAudio.PlayOneShot(clip);
 	}
 
+	/// <summary>
+	/// 到達高度を3Dテキストで表示
+	/// </summary>
 	public void DisplayReachedHeight()
 	{
 		clearText.gameObject.SetActive (true);
