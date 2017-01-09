@@ -41,9 +41,11 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 			return;
 		}
 
-		if( PhotonNetwork.room.playerCount < 2 ){
+		if( PhotonNetwork.room.playerCount < MultiPlayerManager.playerNumNeeded )
+		{
 			return;
-		}else if( !PhotonNetwork.isMasterClient )
+		}
+		else if( !PhotonNetwork.isMasterClient )
 		{
 			return;
 		}
@@ -81,7 +83,8 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 		Vector3 pos = new Vector3(transform.position.x + Random.Range( -diffRange.x, diffRange.x ), transform.position.y, transform.position.z + Random.Range( -diffRange.y, diffRange.y ));
 
 		// photn上に生成
-		PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
+		var c = PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
+		c.transform.SetParent( transform );
 		//Instantiate(chestnut, pos, Quaternion.identity);
 
 		// SEを再生
