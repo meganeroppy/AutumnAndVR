@@ -59,6 +59,7 @@ public class Chestnut : Photon.MonoBehaviour {
 
 		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "の栗を生成");
 
+		// 生成器を親にセット
 		transform.SetParent( ChestnutGenerator.instance.transform );
 	}
 
@@ -88,7 +89,7 @@ public class Chestnut : Photon.MonoBehaviour {
 	/// </summary>
 	void UpdateRotation()
 	{
-		
+		transform.Rotate(Vector3.up, 15f * rotationSpeed );
 	}
 
 	/// <summary>
