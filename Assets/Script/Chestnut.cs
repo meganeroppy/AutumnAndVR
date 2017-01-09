@@ -59,7 +59,7 @@ public class Chestnut : Photon.MonoBehaviour {
 
 		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "の栗を生成");
 
-
+		transform.SetParent( ChestnutGenerator.instance.transform );
 	}
 
 	// Update is called once per frame

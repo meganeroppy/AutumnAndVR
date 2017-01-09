@@ -6,6 +6,7 @@ using System.Collections;
 /// </summary>
 public class ChestnutGenerator : Photon.MonoBehaviour {
 
+	public static ChestnutGenerator instance;
 	/// <summary>
 	/// 生成頻度
 	/// </summary>
@@ -23,6 +24,11 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 	public GameObject chestnut;
 
 	AudioSource myAudio;
+
+	void Awake()
+	{
+		instance = this;	
+	}
 
 	void Start()
 	{
@@ -83,8 +89,7 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 		Vector3 pos = new Vector3(transform.position.x + Random.Range( -diffRange.x, diffRange.x ), transform.position.y, transform.position.z + Random.Range( -diffRange.y, diffRange.y ));
 
 		// photn上に生成
-		var c = PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
-		c.transform.SetParent( transform );
+		PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
 		//Instantiate(chestnut, pos, Quaternion.identity);
 
 		// SEを再生
