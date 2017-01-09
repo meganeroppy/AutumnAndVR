@@ -19,7 +19,7 @@ public class GameManager : Photon.MonoBehaviour
 	/// <summary>
 	/// 現在のステータス
 	/// </summary>
-	public Status curStatus;
+	public Status curStatus{ get; private set; }
 
 	/// <summary>
 	/// シングルモード
@@ -69,19 +69,19 @@ public class GameManager : Photon.MonoBehaviour
 	/// <summary>
 	/// 経過時間
 	/// </summary>
-	public float gameTimer;
+	public float gameTimer{ get; private set; }
 
 	/// <summary>
 	/// ゲームの最中か？
 	/// </summary>
-	public bool running;
+	public bool running{ get; private set; }
 
 	/// <summary>
 	/// ゲーム開始処理中か？
 	/// </summary>
-	public bool inStartingProcess;
+	public bool inStartingProcess{ get; private set; }
 
-	public int chestnutCount = 0;
+	public int chestnutCount{ get; private set; }
 
 	/// <summary>
 	/// 高度到達演出が発生する頻度
@@ -106,6 +106,7 @@ public class GameManager : Photon.MonoBehaviour
 
 		running = false;
 		inStartingProcess = false;
+		chestnutCount = 0;
 
 		if (Muscle.instance != null) {
 			Muscle.instance.SetToOrigin ();
