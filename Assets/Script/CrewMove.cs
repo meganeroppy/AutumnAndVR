@@ -29,6 +29,11 @@ public class CrewMove : Photon.MonoBehaviour {
 	public List<SteamVR_TrackedObject> to;
 	public List<Camera> c;
 
+	/// <summary>
+	/// VRコントローラが向こうの時はこれが手
+	/// </summary>
+	public Transform dummyHand;
+
 	Muscle myMuscle;
 
 	private Vector3 offsetHeightFromMuscle;
@@ -70,6 +75,9 @@ public class CrewMove : Photon.MonoBehaviour {
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 
+		// 右手が無効だったらダミーハンドを使用
+		dummyHand.gameObject.SetActive( !rightHand.gameObject.activeInHierarchy );
+
 		photonView.RPC ("SetReady", PhotonTargets.All, false);
 	}
 
@@ -93,7 +101,7 @@ public class CrewMove : Photon.MonoBehaviour {
 		var moveX = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
 		var moveZ = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
-		rightHand.transform.Translate(moveX, 0, moveZ);
+		(rightHand.gameObject.activeInHierarchy ? rightHand.transform : dummyHand ).Translate(moveX, 0, moveZ);
 
 		if( Input.GetKeyDown(KeyCode.U) )
 		{
@@ -116,6 +124,9 @@ public class CrewMove : Photon.MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// 踏みつけ回数を加算
+	/// </summary>
 	[PunRPC]
 	public void AddStompCount()
 	{
@@ -146,10 +157,14 @@ public class CrewMove : Photon.MonoBehaviour {
 		ready = value;
 	}
 
+	/// <summary>
+	/// 手のワールド座標を返す
+	/// </summary>
+	/// <value>The hand position.</value>
 	public Vector3 handPos
 	{
 		get{
-			return rightHand.transform.position;
+			return (rightHand.gameObject.activeInHierarchy ? rightHand.transform : dummyHand ).position;
 		}
 	}
 }

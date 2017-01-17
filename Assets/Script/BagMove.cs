@@ -33,7 +33,8 @@ public class BagMove : Photon.MonoBehaviour
 	private Muscle myMuscle;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		if(!photonView.isMine)
 		{
 			Destroy(gameObject);
