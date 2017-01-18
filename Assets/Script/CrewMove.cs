@@ -6,7 +6,7 @@ public class CrewMove : Photon.MonoBehaviour {
 
 	float speed = 2f;
 
-	public SteamVR_TrackedObject rightHand;
+	public List<SteamVR_TrackedObject> hands;
 	public Transform eye;
 
 	public AudioListener listener;
@@ -30,9 +30,9 @@ public class CrewMove : Photon.MonoBehaviour {
 	public List<Camera> c;
 
 	/// <summary>
-	/// VRコントローラが向こうの時はこれが手
+	/// VRコントローラが無効の時はこれが手
 	/// </summary>
-	public Transform dummyHand;
+	public List<Transform> dummyHands;
 
 	Muscle myMuscle;
 
@@ -75,8 +75,11 @@ public class CrewMove : Photon.MonoBehaviour {
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 
+		// 有効になっている手が存在するか
+		bool isActiveHands = hands.Find( h => { return h.gameObject.activeInHierarchy; } ) != null;
+
 		// 右手が無効だったらダミーハンドを使用
-		dummyHand.gameObject.SetActive( !rightHand.gameObject.activeInHierarchy );
+		dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveHands ); } );
 
 		photonView.RPC ("SetReady", PhotonTargets.All, false);
 	}
@@ -101,16 +104,20 @@ public class CrewMove : Photon.MonoBehaviour {
 		var moveX = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
 		var moveZ = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
-		(rightHand.gameObject.activeInHierarchy ? rightHand.transform : dummyHand ).Translate(moveX, 0, moveZ);
+		// 左Shiftお押しながらの操作あ左手
+		int handIdx = Input.GetKey( KeyCode.LeftShift ) ? 1 : 0;
+
+		Transform targetHand = (hands[handIdx].gameObject.activeInHierarchy ? hands[handIdx].transform : dummyHands[handIdx] );
+			
+		targetHand.Translate(moveX, 0, moveZ);
 
 		if( Input.GetKeyDown(KeyCode.U) )
 		{
 			Debug.Log("Uが押された プレイヤーID = " + PhotonNetwork.player.ID.ToString());
-
 			PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
 		}
 
-		var device = SteamVR_Controller.Input((int) rightHand.index);
+		var device = SteamVR_Controller.Input((int) hands[ handIdx ].index);
 
 		if( device != null )
 		{			
@@ -161,10 +168,14 @@ public class CrewMove : Photon.MonoBehaviour {
 	/// 手のワールド座標を返す
 	/// </summary>
 	/// <value>The hand position.</value>
-	public Vector3 handPos
-	{
+	public Vector3 GetHandPos( int handIdx )
+	{	
+		return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] ).position;
+	}
+
+	public int handCount{
 		get{
-			return (rightHand.gameObject.activeInHierarchy ? rightHand.transform : dummyHand ).position;
+			return hands.Count > 1 ? hands.Count : dummyHands.Count;
 		}
 	}
 }

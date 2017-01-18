@@ -81,14 +81,19 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 		for( int i=0 ; i< crews.Count ; i++)
 		{
-			if( crews[i] == null )
+			var crew = crews[i];
+			if( crew == null )
 			{
 				Debug.Log("プレイヤーがnull");
-				continue;
+				continue;			
 			}
 
-			bagPos += crews[i].handPos;
+			for( int h=0 ; h < crew.handCount ; h++ )
+			{
+				bagPos += crew.GetHandPos( h );
+			}
 		}
+
 		bagPos /= crews.Count;
 
 		bagPos += Vector3.down * 1f;
