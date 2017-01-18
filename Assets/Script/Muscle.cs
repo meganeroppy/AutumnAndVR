@@ -78,6 +78,12 @@ public class Muscle : Photon.MonoBehaviour
 	/// </summary>
 	private int reachedHeightUnit = 0;
 
+	/// <summary>
+	/// 上昇率
+	/// </summary>
+	/// <value>The ascend rate.</value>
+	public float ascend_rate{ get; set; }
+
 	public GameManager gm;
 
 	/// <summary>
@@ -101,16 +107,19 @@ public class Muscle : Photon.MonoBehaviour
 
 		height = transform.position.y;
 		Debug.Log("スタート時点での高度は " + height.ToString() );
+
+		ascend_rate = 1f;
 	}
 
 	void Update()
 	{
+		// 上昇
+		Ascend();
+
 		// 栗とのあたり判定をチェック
 		CheckCollisionChestnut();
 
 		ReduceJoyTimer ();
-
-	//	CheckBGMPlay();
 	}
 
 	/// <summary>
@@ -122,9 +131,9 @@ public class Muscle : Photon.MonoBehaviour
 			joyTimer -= Time.deltaTime;
 		}
 	}
-
+		
 	/// <summary>
-	/// 上昇する
+	/// 毎フレームの上昇
 	/// </summary>
 	void Ascend()
 	{
@@ -132,39 +141,38 @@ public class Muscle : Photon.MonoBehaviour
 			return;
 		}
 
-		float val = ascend_value;
+		var val = ascend_value * ascend_rate;
 		if( joyTimer > 0 )
 		{
-			val *= 3f;
+			val *= 5f;
 		}
 
-		height += ascend_value;
+		height += val * Time.deltaTime;
 
-		transform.DOMoveY( height, 0.5f);
+		var originPos = transform.position;
+		transform.position = new Vector3(originPos.x, height, originPos.z);
 
-		Debug.Log(height.ToString() + "まで上昇");
+//		Debug.Log(height.ToString() + "まで上昇");
 
 		if( height >= GameManager.instance.goalHeight )
 		{
 			StartCoroutine( gm.ShowGameClearExpression());
-
 			clearText.gameObject.SetActive (true);
 			clearText.text = "くりあたいむ\n" + ((int)GameManager.instance.gameTimer).ToString () + "びょう";
 		}
 		else
 		{
 			int reachUnit = (int)(height / GameManager.instance.measureExpInterval);
-
 			if( reachUnit > reachedHeightUnit )
 			{
 				// ボイスと効果音再生
 				StartCoroutine( PlayReachingSe() );
-
 				reachedHeightUnit = reachUnit;
 			}
 		}
-
 	}
+
+
 
 	/// <summary>
 	/// エネルギーを加算
@@ -172,7 +180,6 @@ public class Muscle : Photon.MonoBehaviour
 	public void AddEnergy(int val, CrewMove sender)
 	{
 		Debug.Log("プレイヤー[ " + sender.photonView.ownerId.ToString() + " ]がエネルギーを加算");
-
 		energy += val ;
 		if( energy >= ascend_cost ){
 			Ascend();

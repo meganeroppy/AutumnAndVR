@@ -114,7 +114,9 @@ public class CrewMove : Photon.MonoBehaviour {
 		if( Input.GetKeyDown(KeyCode.U) )
 		{
 			Debug.Log("Uが押された プレイヤーID = " + PhotonNetwork.player.ID.ToString());
-			PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
+			myMuscle.ascend_rate *= 1.1f;
+			U_count++;
+		//	PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
 		}
 
 		var device = SteamVR_Controller.Input((int) hands[ handIdx ].index);
@@ -177,5 +179,22 @@ public class CrewMove : Photon.MonoBehaviour {
 		get{
 			return hands.Count > 1 ? hands.Count : dummyHands.Count;
 		}
+	}
+
+	int U_count = 0;
+	string b  = "";
+
+	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if (stream.isWriting) {
+			//データの送信
+			stream.SendNext(U_count);
+			stream.SendNext(myMuscle.ascend_rate);
+		} else {
+			//データの受信
+			U_count = (int)stream.ReceiveNext();
+			myMuscle.ascend_rate = (float)stream.ReceiveNext();
+		}
+		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "の上昇率=" + myMuscle.ascend_rate.ToString());
+
 	}
 }
