@@ -68,10 +68,27 @@ public class Muscle : Photon.MonoBehaviour
 	public Transform originPos;
 
 	/// <summary>
+	/// キャッチ時効果音
+	/// </summary>
+	public AudioClip se_catch;
+
+	/// <summary>
+	/// キャッチ時筋肉ボイス
+	/// </summary>
+	public AudioClip vo_catch;
+
+
+	/// <summary>
 	/// 筋肉喜び中時間の残り秒
 	/// </summary>
 	[HideInInspector]
-	public float joyTimer =0;
+	private float joyTimer =0;
+	public void Enjoy()
+	{
+		joy_rate *= 1.35f;
+		Debug.Log(joy_rate);
+		joyTimer = 5;
+	}
 
 	/// <summary>
 	/// 到達した高さの区切り
@@ -82,7 +99,7 @@ public class Muscle : Photon.MonoBehaviour
 	/// 上昇率
 	/// </summary>
 	/// <value>The ascend rate.</value>
-	public float ascend_rate{ get; set; }
+	public float joy_rate{ get; set; }
 
 	public GameManager gm;
 
@@ -108,7 +125,7 @@ public class Muscle : Photon.MonoBehaviour
 		height = transform.position.y;
 		Debug.Log("スタート時点での高度は " + height.ToString() );
 
-		ascend_rate = 1f;
+		joy_rate = 1f;
 	}
 
 	void Update()
@@ -122,13 +139,23 @@ public class Muscle : Photon.MonoBehaviour
 		ReduceJoyTimer ();
 	}
 
+	bool reduceOnce = false;
+
 	/// <summary>
 	/// 喜び時間減少
 	/// </summary>
 	void ReduceJoyTimer()
 	{
 		if (joyTimer >= 0) {
+			reduceOnce = false;
 			joyTimer -= Time.deltaTime;
+		}
+		else{
+			if( !reduceOnce )
+			{
+				joy_rate *= 0.5f;
+				reduceOnce = true;
+			}
 		}
 	}
 		
@@ -141,10 +168,10 @@ public class Muscle : Photon.MonoBehaviour
 			return;
 		}
 
-		var val = ascend_value * ascend_rate;
+		var val = ascend_value;
 		if( joyTimer > 0 )
 		{
-			val *= 5f;
+			val *= 	joy_rate;
 		}
 
 		height += val * Time.deltaTime;
@@ -171,8 +198,6 @@ public class Muscle : Photon.MonoBehaviour
 			}
 		}
 	}
-
-
 
 	/// <summary>
 	/// エネルギーを加算
@@ -245,7 +270,21 @@ public class Muscle : Photon.MonoBehaviour
 
 				c.Harvest(false);
 			
-				Roar();
+				if( c.isGoodItem )
+				{
+					PlaySe(se_catch);
+
+					// 筋肉の喜び時間追加
+					Enjoy();
+
+					// ボイス
+					PlaySe(vo_catch);
+
+				}
+				else
+				{
+					Roar();
+				}
 			}
 		}
 	}

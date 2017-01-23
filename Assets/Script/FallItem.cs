@@ -42,8 +42,7 @@ public class FallItem : Photon.MonoBehaviour {
 		Happy
 	}
 
-	[SerializeField]
-	bool isGoodItem;
+	public bool isGoodItem;
 
 	public GameObject[] effects;
 
@@ -141,18 +140,17 @@ public class FallItem : Photon.MonoBehaviour {
 			{
 				// キャッチするべきアイテムのとき
 				effect = Instantiate( effects[(int)EffectType.Catch] );
-
 			}
 		}else{
 			// 筋肉にぶつかった
 			if( isGoodItem )
 			{
-				// 避けるべきアイテムにぶつかった
+				// 避けるべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Happy] );
 			}
 			else
 			{
-				// キャッチするべきアイテムにぶつかった
+				// キャッチするべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Damage] );	
 			}				
 		}

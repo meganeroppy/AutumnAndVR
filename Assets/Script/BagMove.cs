@@ -86,23 +86,27 @@ public class BagMove : Photon.MonoBehaviour
 
 				c.Harvest(true);
 
-				// ローカルのみで良い
-				catchCount++;
-
-				// 効果音
-				GetComponent<AudioSource>().PlayOneShot(se_catch);
-
-				// 筋肉の喜び時間追加
-				myMuscle.joyTimer += 1f;
-
-				// ボイス
-				if(myMuscle != null)
+				// 拾うべきアイテムのときだけ処理
+				if( !c.isGoodItem )
 				{
-					myMuscle.PlaySe(vo_catch);
-				}
+					// ローカルのみで良い
+					catchCount++;
 
-				// モデルの更新
-				SetModel();
+					// 効果音
+					GetComponent<AudioSource>().PlayOneShot(se_catch);
+
+					// 筋肉の喜び時間追加
+					myMuscle.Enjoy();
+
+					// ボイス
+					if(myMuscle != null)
+					{
+						myMuscle.PlaySe(vo_catch);
+					}
+
+					// モデルの更新
+					SetModel();
+				}
 			}
 		}
 	}

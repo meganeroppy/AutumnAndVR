@@ -114,7 +114,7 @@ public class CrewMove : Photon.MonoBehaviour {
 		if( Input.GetKeyDown(KeyCode.U) )
 		{
 			Debug.Log("Uが押された プレイヤーID = " + PhotonNetwork.player.ID.ToString());
-			myMuscle.ascend_rate *= 1.1f;
+			myMuscle.joy_rate *= 1.1f;
 			U_count++;
 		//	PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
 		}
@@ -193,13 +193,13 @@ public class CrewMove : Photon.MonoBehaviour {
 		if (stream.isWriting) {
 			//データの送信
 			stream.SendNext(U_count);
-			stream.SendNext(myMuscle.ascend_rate);
+			stream.SendNext(myMuscle.joy_rate);
 		} else {
 			//データの受信
 			U_count = (int)stream.ReceiveNext();
-			myMuscle.ascend_rate = (float)stream.ReceiveNext();
+			myMuscle.joy_rate = (float)stream.ReceiveNext();
 		}
-		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "の上昇率=" + myMuscle.ascend_rate.ToString());
+		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "の上昇率=" + myMuscle.joy_rate.ToString());
 
 	}
 }
