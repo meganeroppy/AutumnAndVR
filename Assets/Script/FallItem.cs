@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 /// <summary>
-/// イガグリ
+/// 落下アイテム
 /// </summary>
-public class Chestnut : Photon.MonoBehaviour {
+public class FallItem : Photon.MonoBehaviour {
 
 	/// <summary>
 	/// イガグリリスト
 	/// </summary>
-	public static List<Chestnut> cList;
+	public static List<FallItem> cList;
 
 	/// <summary>
 	/// 落下スピード
@@ -37,9 +37,13 @@ public class Chestnut : Photon.MonoBehaviour {
 	}
 
 	public enum EffectType{
-		Good,
-		bad,
+		Catch,
+		Damage,
+		Happy
 	}
+
+	[SerializeField]
+	bool isGoodItem;
 
 	public GameObject[] effects;
 
@@ -52,15 +56,15 @@ public class Chestnut : Photon.MonoBehaviour {
 	{
 		if( cList == null)
 		{
-			cList = new List<Chestnut>();
+			cList = new List<FallItem>();
 		}
 
 		cList.Add(this);
 
-		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "の栗を生成");
+		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを生成");
 
 		// 生成器を親にセット
-		transform.SetParent( ChestnutGenerator.instance.transform );
+		transform.SetParent( FallItemGenerator.instance.transform );
 	}
 
 	// Update is called once per frame
@@ -107,7 +111,7 @@ public class Chestnut : Photon.MonoBehaviour {
 			//}
 			Destroy(gameObject);
 
-			Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "の栗を削除");
+			Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを削除");
 		}
 	}
 
@@ -123,17 +127,40 @@ public class Chestnut : Photon.MonoBehaviour {
 		//	return;
 		}
 
-		GameObject effect;
+		GameObject effect = null;
 
 		if(byBag){
-			// 良いエフェクト
-			effect = Instantiate( effects[(int)EffectType.Good] );
+			// カゴにぶつかった
+
+			if( isGoodItem )
+			{
+				// 避けるべきアイテムのとき
+				// なにもしない
+			}
+			else
+			{
+				// キャッチするべきアイテムのとき
+				effect = Instantiate( effects[(int)EffectType.Catch] );
+
+			}
 		}else{
-			// ダメージエフェクト
-			effect = Instantiate( effects[(int)EffectType.bad] );
+			// 筋肉にぶつかった
+			if( isGoodItem )
+			{
+				// 避けるべきアイテムにぶつかった
+				effect = Instantiate( effects[(int)EffectType.Happy] );
+			}
+			else
+			{
+				// キャッチするべきアイテムにぶつかった
+				effect = Instantiate( effects[(int)EffectType.Damage] );	
+			}				
 		}
 
-		effect.transform.position = transform.position;
+		if( effect != null )
+		{
+			effect.transform.position = transform.position;
+		}
 
 		harvested = true;
 		model.SetActive(false);

@@ -68,7 +68,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 		if(PhotonNetwork.isMasterClient )
 		{
-			PhotonNetwork.Instantiate("ChestnutGenerator", Vector3.zero, Quaternion.identity, 0);
+			PhotonNetwork.Instantiate("FallItemGenerator", Vector3.zero, Quaternion.identity, 0);
 		}
 	}
 

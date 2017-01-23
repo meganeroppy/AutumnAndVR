@@ -1,23 +1,4 @@
-﻿/*
-開始前テキスト
-
-string str = “”;
-
-str += 
-
-	"くりあたいむ” + Time + “\n” ;
-	str += "ひろった栗の数 = ” + Chestnut.Count + “\n”;
-	str += “おとした栗の数 = ” + Chestnut.Count + “\n”;
-
-foreach(Photon.
-
-	str +=
-	"あなたのふみつけ数” +  00
-	ともだちのふみつけ数 00
-	ごうけいふみつけ数 00
-	*/
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -159,7 +140,7 @@ public class InfoText : Photon.MonoBehaviour {
 		case GameManager.Status.GameClear:
 			// ゲームクリア時
 			int clearTime = ((int)GameManager.instance.gameTimer);
-			int chestnutCount = GameManager.instance.chestnutCount;
+			int catchCount = GameManager.instance.catchCount;
 			int myStomp = 0;
 			int otherStomp = 0;
 			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
@@ -178,7 +159,6 @@ public class InfoText : Photon.MonoBehaviour {
 			int totalStomp = myStomp + otherStomp;
 
 			str = "くりあたいむ\n" + clearTime.ToString () + "びょう" +
-			//	"びょう\n\nひろったくりのかず " + chestnutCount.ToString() + "こ" +
 				"\n\nあなたは " + myStomp.ToString() + " ふみ" +
 				"\nともだちは " + otherStomp.ToString() + " ふみ";
 			break;

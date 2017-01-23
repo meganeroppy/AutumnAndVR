@@ -4,9 +4,9 @@ using System.Collections;
 /// <summary>
 /// イガグリ生成装置
 /// </summary>
-public class ChestnutGenerator : Photon.MonoBehaviour {
+public class FallItemGenerator : Photon.MonoBehaviour {
 
-	public static ChestnutGenerator instance;
+	public static FallItemGenerator instance;
 	/// <summary>
 	/// 生成頻度
 	/// </summary>
@@ -21,7 +21,7 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 	/// <summary>
 	/// イガグリ
 	/// </summary>
-	public GameObject chestnut;
+	public GameObject fallItem;
 
 	AudioSource myAudio;
 
@@ -58,8 +58,8 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 
 		if( CheckTimer() )
 		{
-		//	PhotonNetwork.RPC(photonView, "Generate", PhotonTargets.All, false);
-			Generate();
+			PhotonNetwork.RPC(photonView, "Generate", PhotonTargets.All, false);
+			// Generate()
 		}
 	}
 
@@ -78,19 +78,30 @@ public class ChestnutGenerator : Photon.MonoBehaviour {
 	}
 
 	/// <summary>
-	/// イガグリを生成
+	/// 落下アイテムを生成
 	/// </summary>
 	[PunRPC]
 	void Generate()
 	{
-		Debug.Log("マスタープレイヤー[ " + PhotonNetwork.player.ID + " ]が栗を生成");
+		Debug.Log("マスタープレイヤー[ " + PhotonNetwork.player.ID + " ]がアイテムを生成");
+
 
 		//　生成位置を決定
 		Vector3 pos = new Vector3(transform.position.x + Random.Range( -diffRange.x, diffRange.x ), transform.position.y, transform.position.z + Random.Range( -diffRange.y, diffRange.y ));
 
+
+		bool isGoodItem = Random.Range(0, 4).Equals(0);
+
 		// photn上に生成
-		PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
-		//Instantiate(chestnut, pos, Quaternion.identity);
+		if( isGoodItem )
+		{
+			PhotonNetwork.Instantiate("Banana", pos, Quaternion.identity, 0);
+		}
+		else
+		{
+			PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
+			//Instantiate(chestnut, pos, Quaternion.identity);
+		}
 
 		// SEを再生
 		myAudio.Play();
