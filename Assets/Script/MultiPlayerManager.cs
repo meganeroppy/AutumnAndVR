@@ -74,11 +74,13 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 	/// <summary>
 	/// かごの位置を更新
+	/// 四角形範囲でのキャッチが完成したら不要
 	/// </summary>
 	void UpdateBagPos()
 	{
 		Vector3 bagPos = Vector3.zero;
 
+		var posCount = 0;
 		for( int i=0 ; i< crews.Count ; i++)
 		{
 			var crew = crews[i];
@@ -91,10 +93,11 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 			for( int h=0 ; h < crew.handCount ; h++ )
 			{
 				bagPos += crew.GetHandPos( h );
+				posCount++;
 			}
 		}
 
-		bagPos /= crews.Count;
+		bagPos /= posCount;
 
 		bagPos += Vector3.down * 1f;
 

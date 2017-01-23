@@ -185,6 +185,11 @@ public class CrewMove : Photon.MonoBehaviour {
 	string b  = "";
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+		if( myMuscle == null )
+		{
+			return;
+		}
+
 		if (stream.isWriting) {
 			//データの送信
 			stream.SendNext(U_count);

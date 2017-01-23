@@ -11,12 +11,12 @@ public class BagMove : Photon.MonoBehaviour
 	/// <summary>
 	/// アイテムを取ったとみなす範囲
 	/// </summary>
-	float catchRange = 0.75f;
+	float catchRange = 0.95f;
 
 	/// <summary>
 	/// モデル差し替えの閾値
 	/// </summary>
-	int[] modelChangeThreshold = new int[3]{10, 20, 40};
+	int[] modelChangeThreshold = new int[3]{15, 30, 50};
 
 	/// <summary>
 	/// キャッチ時効果音
