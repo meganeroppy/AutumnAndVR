@@ -9,7 +9,7 @@ public class BagMove : Photon.MonoBehaviour
 	public GameObject[] models;
 
 	/// <summary>
-	/// 栗を取ったとみなす範囲
+	/// アイテムを取ったとみなす範囲
 	/// </summary>
 	float catchRange = 0.75f;
 
@@ -54,42 +54,40 @@ public class BagMove : Photon.MonoBehaviour
 
 	void Update()
 	{
-		CheckChestnut();
+		CheckFallItem();
 	}
 
-	void CheckChestnut()
+	void CheckFallItem()
 	{
-		if(Chestnut.cList == null)
+		if(FallItem.cList == null)
 		{
 			return;
 		}
 
 		float dist; 
-		for(int i=0 ; i < Chestnut.cList.Count ; i++)
+		for(int i=0 ; i < FallItem.cList.Count ; i++)
 		{
-			Chestnut c = Chestnut.cList[i];
+			FallItem c = FallItem.cList[i];
 
 			if (c == null) {
 				continue;
 			}
 
-			// すでに取られた栗はスキップ
+			// すでに取られたアイテムはスキップ
 			if( c.harvested ) continue;
 
-			// 栗との距離
+			// アイテムとの距離
 			dist =  Mathf.Abs( (transform.position - c.transform.position).magnitude );
 
 			if( dist <= catchRange )
 			{
-				Debug.Log("栗をキャッチ");
+				Debug.Log("アイテムをキャッチ");
 				//PhotonNetwork.RPC(c.photonView, "Harvest", PhotonTargets.All, false, true);
 
 				c.Harvest(true);
 
 				// ローカルのみで良い
 				catchCount++;
-
-				//PhotonNetwork.RPC( GameManagerTest.instance.photonView, "AddChestnutCount", PhotonTargets.All, false, 1);
 
 				// 効果音
 				GetComponent<AudioSource>().PlayOneShot(se_catch);

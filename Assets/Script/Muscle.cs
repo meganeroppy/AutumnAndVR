@@ -31,7 +31,7 @@ public class Muscle : Photon.MonoBehaviour
 	int energy = 0; 
 
 	/// <summary>
-	/// 栗がぶつかったとみなす範囲
+	/// アイテムがぶつかったとみなす範囲
 	/// </summary>
 	float hitRange = 0.1f;
 
@@ -116,8 +116,8 @@ public class Muscle : Photon.MonoBehaviour
 		// 上昇
 		Ascend();
 
-		// 栗とのあたり判定をチェック
-		CheckCollisionChestnut();
+		// アイテムとのあたり判定をチェック
+		CheckCollisionFallItem();
 
 		ReduceJoyTimer ();
 	}
@@ -215,33 +215,33 @@ public class Muscle : Photon.MonoBehaviour
 	}
 
 	/// <summary>
-	/// 栗との衝突を検出
+	/// アイテムとの衝突を検出
 	/// </summary>
-	void CheckCollisionChestnut()
+	void CheckCollisionFallItem()
 	{
-		if(Chestnut.cList == null)
+		if(FallItem.cList == null)
 		{
 			return;
 		}
 
 		float dist; 
-		for(int i=0 ; i < Chestnut.cList.Count ; i++)
+		for(int i=0 ; i < FallItem.cList.Count ; i++)
 		{
-			Chestnut c = Chestnut.cList[i];
+			FallItem c = FallItem.cList[i];
 
 			if (c == null) {
 				continue;
 			}
 
-			// すでに取られた栗はスキップ
+			// すでに取られたアイテムはスキップ
 			if( c.harvested ) continue;
 
-			// 栗との高度比較
+			// アイテムとの高度比較
 			dist =  Mathf.Abs( (transform.position.y - c.transform.position.y) );
 
 			if( dist <= hitRange )
 			{
-				Debug.Log("栗が筋肉にヒット！");
+				Debug.Log("アイテムが筋肉にヒット！");
 
 				c.Harvest(false);
 			

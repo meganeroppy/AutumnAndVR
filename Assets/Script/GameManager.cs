@@ -81,7 +81,7 @@ public class GameManager : Photon.MonoBehaviour
 	/// </summary>
 	public bool inStartingProcess{ get; private set; }
 
-	public int chestnutCount{ get; private set; }
+	public int catchCount{ get; private set; }
 
 	/// <summary>
 	/// 高度到達演出が発生する頻度
@@ -109,7 +109,7 @@ public class GameManager : Photon.MonoBehaviour
 
 		running = false;
 		inStartingProcess = false;
-		chestnutCount = 0;
+		catchCount = 0;
 
 		if (Muscle.instance != null) {
 			Muscle.instance.SetToOrigin ();
@@ -221,14 +221,14 @@ public class GameManager : Photon.MonoBehaviour
 		curStatus = Status.GameOver;
 		running = false;
 
-		if (Chestnut.cList != null) {
-			for (int i = Chestnut.cList.Count - 1; i >= 0; i--) {
-				var c = Chestnut.cList [i];
+		if (FallItem.cList != null) {
+			for (int i = FallItem.cList.Count - 1; i >= 0; i--) {
+				var c = FallItem.cList [i];
 				if (c != null) {
 					Destroy (c.gameObject);
 				}
 			}
-			Chestnut.cList.Clear ();
+			FallItem.cList.Clear ();
 		}
 
 		int height = (int)Mathf.Floor( Muscle.height );
@@ -264,14 +264,14 @@ public class GameManager : Photon.MonoBehaviour
 	/// </summary>
 	public IEnumerator ShowGameClearExpression()
 	{
-		if (Chestnut.cList != null) {
-			for (int i = Chestnut.cList.Count - 1; i >= 0; i--) {
-				var c = Chestnut.cList [i];
+		if (FallItem.cList != null) {
+			for (int i = FallItem.cList.Count - 1; i >= 0; i--) {
+				var c = FallItem.cList [i];
 				if (c != null) {
 					Destroy (c.gameObject);
 				}
 			}
-			Chestnut.cList.Clear ();
+			FallItem.cList.Clear ();
 		}
 
 		Debug.LogError("ゴール！！");
@@ -333,8 +333,8 @@ public class GameManager : Photon.MonoBehaviour
 	}
 
 	[PunRPC]
-	void AddChestnutCount()
+	void AddCatchCount()
 	{
-		chestnutCount++;
+		catchCount++;
 	}
 }
