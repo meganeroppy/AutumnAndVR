@@ -93,6 +93,8 @@ public class CrewMove : Photon.MonoBehaviour {
 		}
 
 		GetInput();
+
+//		CheckItemCatchBySquare();
 	}
 		
 	void GetInput()
@@ -167,12 +169,12 @@ public class CrewMove : Photon.MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 手のワールド座標を返す
+	/// 手のトランスフォームを返す
 	/// </summary>
 	/// <value>The hand position.</value>
-	public Vector3 GetHandPos( int handIdx )
+	public Transform GetHand( int handIdx )
 	{	
-		return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] ).position;
+		return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] );
 	}
 
 	public int handCount{
@@ -182,7 +184,6 @@ public class CrewMove : Photon.MonoBehaviour {
 	}
 
 	int U_count = 0;
-	string b  = "";
 
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
 		if( myMuscle == null )
@@ -200,6 +201,5 @@ public class CrewMove : Photon.MonoBehaviour {
 			myMuscle.joy_rate = (float)stream.ReceiveNext();
 		}
 		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "の上昇率=" + myMuscle.joy_rate.ToString());
-
 	}
 }

@@ -38,7 +38,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 	{
 		if(  bag != null )
 		{
-			UpdateBagPos();
+			UpdateCatchArea();
 		}
 	}
 
@@ -72,15 +72,16 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 		}
 	}
 
+	bool defineHandObjects = false;
+	List<Transform> hands = new List<Transform>();
 	/// <summary>
-	/// かごの位置を更新
-	/// 四角形範囲でのキャッチが完成したら不要
+	/// アイテム取得範囲を更新する
 	/// </summary>
-	void UpdateBagPos()
+	void UpdateCatchArea()
 	{
+		#if true
 		Vector3 bagPos = Vector3.zero;
-
-		var posCount = 0;
+		var handCount = 0;
 		for( int i=0 ; i< crews.Count ; i++)
 		{
 			var crew = crews[i];
@@ -92,15 +93,55 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 			for( int h=0 ; h < crew.handCount ; h++ )
 			{
-				bagPos += crew.GetHandPos( h );
-				posCount++;
+				bagPos += crew.GetHand( h ).position;
+				handCount++;
 			}
 		}
 
-		bagPos /= posCount;
-
+		bagPos /= handCount;
 		bagPos += Vector3.down * 1f;
-
 		bag.transform.position = bagPos;
+
+		#else
+
+		if( !defineHandObjects )
+		{
+			// 手が定義されていなければ取得する
+
+			for( int i=0 ; i< crews.Count ; i++)
+			{
+				var crew = crews[i];
+				if( crew == null )
+				{
+					Debug.Log("プレイヤーがnull");
+					continue;			
+				}
+
+				for( int h=0 ; h < crew.handCount ; h++ )
+				{
+					hands.Add( crew.GetHand( h ) );
+				}
+			}
+			if( hands.Count < 4 )
+			{
+				Debug.LogError("手の数が不足しているのでアイテム取得判定が不可 手の数 -> [ " + hands.Count.ToString() + " ]");
+				return;
+			}
+			defineHandObjects = true;
+		}
+			
+		// ここからキャッチ判定
+		for(int i=0 ; i < FallItem.cList.Count ; i++)
+		{
+			var item = FallItem.cList[i];
+			var inside = SquareDetector.IsInside( hands[0], hands[1], hands[2], hands[3], item.transform.position );
+			if( inside )
+			{
+				Debug.Log( item.name + "をキャッチ！");
+			}
+		}
+
+		#endif
+
 	}
 }
