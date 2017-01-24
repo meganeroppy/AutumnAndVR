@@ -83,6 +83,14 @@ public class GameManager : Photon.MonoBehaviour
 
 	public int catchCount{ get; private set; }
 
+	public bool overSky = false;
+
+	public GameObject cityObjectSet;
+	public GameObject spaceObjectSet;
+
+	public Material citySkybox;
+	public Material spaceSkybox;
+
 	/// <summary>
 	/// 高度到達演出が発生する頻度
 	/// </summary>
@@ -144,6 +152,20 @@ public class GameManager : Photon.MonoBehaviour
 		UpdateGameTimer();
 
 		CheckInput();
+
+		SwitchBg ();
+	}
+
+	void SwitchBg()
+	{
+			cityObjectSet.SetActive (!overSky);
+
+
+			spaceObjectSet.SetActive (overSky);
+
+
+		RenderSettings.skybox = overSky ? spaceSkybox : citySkybox;
+
 	}
 
 	/// <summary>
