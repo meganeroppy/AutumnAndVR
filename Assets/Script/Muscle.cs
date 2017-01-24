@@ -18,7 +18,7 @@ public class Muscle : Photon.MonoBehaviour
 	/// <summary>
 	/// 一回の上昇で 何M 上昇するか
 	/// </summary>
-	const float ascend_value = 1f; 
+	public float ascend_value = 1f; 
 
 	/// <summary>
 	/// 何ポイントで１回上昇するか？

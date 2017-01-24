@@ -83,13 +83,13 @@ public class GameManager : Photon.MonoBehaviour
 
 	public int catchCount{ get; private set; }
 
-	public bool overSky = false;
-
 	public GameObject cityObjectSet;
 	public GameObject spaceObjectSet;
 
 	public Material citySkybox;
 	public Material spaceSkybox;
+
+	public Transform cloud;
 
 	/// <summary>
 	/// 高度到達演出が発生する頻度
@@ -158,14 +158,20 @@ public class GameManager : Photon.MonoBehaviour
 
 	void SwitchBg()
 	{
-			cityObjectSet.SetActive (!overSky);
+		// いずれかのプレイヤーが雲の高さに到達したら拝啓差し替え
+		bool overSky = false;
+		for (int i = 0; i < MultiPlayerManager.crews.Count; i++) 
+		{
+			if (MultiPlayerManager.crews [i].transform.position.y > cloud.position.y)
+			{
+				overSky = true;
+				break;
+			}
+		}
 
-
-			spaceObjectSet.SetActive (overSky);
-
-
+		cityObjectSet.SetActive (!overSky);
+		spaceObjectSet.SetActive (overSky);
 		RenderSettings.skybox = overSky ? spaceSkybox : citySkybox;
-
 	}
 
 	/// <summary>
