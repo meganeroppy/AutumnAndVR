@@ -46,6 +46,8 @@ public class FallItem : Photon.MonoBehaviour {
 
 	public GameObject[] effects;
 
+	public bool inParentTransform = false;
+
 	/// <summary>
 	/// モデル
 	/// </summary>
@@ -62,8 +64,10 @@ public class FallItem : Photon.MonoBehaviour {
 
 		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを生成");
 
-		// 生成器を親にセット
-		transform.SetParent( FallItemGenerator.instance.transform );
+		if (inParentTransform) {
+			// 生成器を親にセット
+			transform.SetParent (FallItemGenerator.instance.transform);
+		}
 	}
 
 	// Update is called once per frame
