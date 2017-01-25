@@ -204,14 +204,19 @@ public class GameManager : Photon.MonoBehaviour
 			return;
 		}
 
-		for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+		if( singleMode && MultiPlayerManager.crews[0].ready )
 		{
-			if ( !MultiPlayerManager.crews[i].ready )
+		}
+		else
+		{
+			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
 			{
-				return;
+				if ( !MultiPlayerManager.crews[i].ready )
+				{
+					return;
+				}
 			}
 		}
-
 		inStartingProcess = true;
 		ShowGameStartExpression();
 	}

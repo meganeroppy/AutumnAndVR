@@ -36,10 +36,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 	void Update()
 	{
-		if(  bag != null )
-		{
-			UpdateCatchArea();
-		}
+		UpdateCatchArea();
 	}
 
 	//  ランダムでルームを選び入る
@@ -64,7 +61,16 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 	{
 		PhotonNetwork.Instantiate("CrewMove", Vector3.zero, Quaternion.identity, 0);
 
-		bag = PhotonNetwork.Instantiate("Bag", Vector3.zero, Quaternion.identity, 0);
+		// シングルモードだったらもう一体
+		if( GameManager.instance.singleMode )
+		{
+			PhotonNetwork.Instantiate("CrewMove", Vector3.zero, Quaternion.identity, 0);
+		}
+
+		if( bagMode )
+		{
+			bag = PhotonNetwork.Instantiate("Bag", Vector3.zero, Quaternion.identity, 0);
+		}
 
 		if(PhotonNetwork.isMasterClient )
 		{
@@ -74,40 +80,23 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 	bool defineHandObjects = false;
 	List<Transform> hands = new List<Transform>();
+
+	public bool bagMode = true;
+
 	/// <summary>
 	/// アイテム取得範囲を更新する
 	/// </summary>
 	void UpdateCatchArea()
 	{
-		#if true
-		Vector3 bagPos = Vector3.zero;
-		var handCount = 0;
-		for( int i=0 ; i< crews.Count ; i++)
+		if( bagMode )
 		{
-			var crew = crews[i];
-			if( crew == null )
+			if( bag == null )
 			{
-				Debug.Log("プレイヤーがnull");
-				continue;			
+				return;
 			}
 
-			for( int h=0 ; h < crew.handCount ; h++ )
-			{
-				bagPos += crew.GetHand( h ).position;
-				handCount++;
-			}
-		}
-
-		bagPos /= handCount;
-		bagPos += Vector3.down * 1f;
-		bag.transform.position = bagPos;
-
-		#else
-
-		if( !defineHandObjects )
-		{
-			// 手が定義されていなければ取得する
-
+			Vector3 bagPos = Vector3.zero;
+			var handCount = 0;
 			for( int i=0 ; i< crews.Count ; i++)
 			{
 				var crew = crews[i];
@@ -119,29 +108,82 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 				for( int h=0 ; h < crew.handCount ; h++ )
 				{
-					hands.Add( crew.GetHand( h ) );
+					bagPos += crew.GetHand( h ).position;
+					handCount++;
 				}
 			}
-			if( hands.Count < 4 )
+
+			bagPos /= handCount;
+			bagPos += Vector3.down * 1f;
+			bag.transform.position = bagPos;
+		}
+		else
+		{
+
+			if( !defineHandObjects )
 			{
-				Debug.LogError("手の数が不足しているのでアイテム取得判定が不可 手の数 -> [ " + hands.Count.ToString() + " ]");
+				// 手が定義されていなければ取得する
+
+				for( int i=0 ; i< crews.Count ; i++)
+				{
+					var crew = crews[i];
+					if( crew == null )
+					{
+						Debug.Log("プレイヤーがnull");
+						continue;			
+					}
+
+					for( int j=0 ; j < crew.handCount ; j++ )
+					{
+						var h = crew.GetHand( j );
+						if( h == null )
+						{
+							return;
+						}
+						hands.Add( h );
+					}
+				}
+				if( hands.Count < 4 )
+				{
+					Debug.LogError("手の数が不足しているのでアイテム取得判定が不可 手の数 -> [ " + hands.Count.ToString() + " ]");
+					return;
+				}
+				defineHandObjects = true;
+			}
+				
+			if(FallItem.cList == null)
+			{
 				return;
 			}
-			defineHandObjects = true;
-		}
-			
-		// ここからキャッチ判定
-		for(int i=0 ; i < FallItem.cList.Count ; i++)
-		{
-			var item = FallItem.cList[i];
-			var inside = SquareDetector.IsInside( hands[0], hands[1], hands[2], hands[3], item.transform.position );
-			if( inside )
-			{
-				Debug.Log( item.name + "をキャッチ！");
-			}
-		}
 
-		#endif
+			// ここからキャッチ判定
+			for(int i=0 ; i < FallItem.cList.Count ; i++)
+			{
+				var item = FallItem.cList[i];
+				if( item == null )
+				{
+					continue;
+				}
+				var inside = SquareDetector.IsInside( hands[0].position, hands[1].position, hands[2].position, hands[3].position, item.transform.position );
+				if( inside )
+				{
+					if( !item.harvested )
+					{
+						Debug.Log( item.name + "をキャッチ！");
+						item.Harvest(true);
+
+
+						// TODO: 演出
+						// 拾うべきアイテムのときだけ処理
+						if( !item.isGoodItem )
+						{
+								
+						}
+					}
+				}
+			}
+
+		}
 
 	}
 }

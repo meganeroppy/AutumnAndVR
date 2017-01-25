@@ -44,8 +44,11 @@ public class CrewMove : Photon.MonoBehaviour {
 	public int stompCount { private set; get;}
 
 	// Use this for initialization
-	void Start () {
-		if( !photonView.isMine )
+	void Start () 
+	{
+		MultiPlayerManager.crews.Add(this);
+
+		if( !photonView.isMine || ( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) ))
 		{
 			notNeededObjForOther.ForEach( g => g.SetActive(false) );
 			to.ForEach( g => g.enabled = false );
@@ -62,7 +65,6 @@ public class CrewMove : Photon.MonoBehaviour {
 			notNeededObjForMe.ForEach( g => g.SetActive(false) );
 		}
 
-		MultiPlayerManager.crews.Add(this);
 
 		myMuscle = GameObject.Find("Muscle").GetComponent<Muscle>();
 
@@ -70,6 +72,11 @@ public class CrewMove : Photon.MonoBehaviour {
 		Debug.LogError("あなたのプレイヤーIDは[ " + photonViewId.ToString() + " ]");
 
 		Transform t = photonViewId == 1 ? myMuscle.pos1 : myMuscle.pos2;
+
+		if( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) )
+		{
+			t = myMuscle.pos2;
+		}
 
 		transform.SetParent(t);
 		transform.localPosition = Vector3.zero;
@@ -88,6 +95,12 @@ public class CrewMove : Photon.MonoBehaviour {
 	void Update () {
 
 		if( !photonView.isMine )
+		{
+			return;
+		}
+
+		// シングルモードの２PはInput無視
+		if( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) )
 		{
 			return;
 		}

@@ -86,7 +86,7 @@ public class Muscle : Photon.MonoBehaviour
 	public void Enjoy()
 	{
 		joy_rate *= 1.35f;
-		Debug.Log(joy_rate);
+		//Debug.Log(joy_rate);
 		joyTimer = 5;
 	}
 

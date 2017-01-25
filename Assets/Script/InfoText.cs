@@ -107,35 +107,43 @@ public class InfoText : Photon.MonoBehaviour {
 		switch( GameManager.instance.curStatus )
 		{
 		case GameManager.Status.BeforeStart:
-			if( PhotonNetwork.room == null )
-			{
-				return;
-			}
 
-			// ゲーム開始前
-			int playerNum = PhotonNetwork.room.playerCount;
-			if(  playerNum < MultiPlayerManager.playerNumNeeded )
+			if( !GameManager.instance.singleMode )
 			{
-				str = "プレイヤーのさんか\nをたいきちゅう ( " + playerNum.ToString() + " / " + MultiPlayerManager.playerNumNeeded + " )";
-			}
-			else
-			{
-				bool ready1p = false;
-				bool ready2p = false;
-				for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+				if( PhotonNetwork.room == null )
 				{
-					CrewMove c = MultiPlayerManager.crews[i];
-					if ( c.photonView.ownerId == 1 )
-					{
-						ready1p = c.ready;
-					}
-					else
-					{
-						ready2p = c.ready;
-					}
+					return;
 				}
-				str = "プレイヤーのじゅんびを\nたいきちゅう ( 1P " + (ready1p ? "◯" : "×") + " / 2P " + (ready2p ? "◯" : "×") + " )"; 
+
+				// ゲーム開始前
+				int playerNum;
+
+				playerNum = PhotonNetwork.room.playerCount;
+
+				if(  playerNum < MultiPlayerManager.playerNumNeeded )
+				{
+					str = "プレイヤーのさんか\nをたいきちゅう ( " + playerNum.ToString() + " / " + MultiPlayerManager.playerNumNeeded + " )";
+				}
 			}
+				
+			bool ready1p = false;
+			bool ready2p = false;
+			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+			{
+				CrewMove c = MultiPlayerManager.crews[i];
+				if ( (!GameManager.instance.singleMode && c.photonView.ownerId == 1)
+					|| (GameManager.instance.singleMode && MultiPlayerManager.crews.IndexOf(c).Equals(0) )
+				)
+				{
+					ready1p = c.ready;
+				}
+				else
+				{
+					ready2p = c.ready;
+				}
+			}
+			str = "プレイヤーのじゅんびを\nたいきちゅう ( 1P " + (ready1p ? "◯" : "×") + " / 2P " + (ready2p ? "◯" : "×") + " )"; 
+
 			break;
 		case GameManager.Status.GameClear:
 			// ゲームクリア時
@@ -156,11 +164,10 @@ public class InfoText : Photon.MonoBehaviour {
 				}
 			}
 
-			int totalStomp = myStomp + otherStomp;
-
-			str = "くりあたいむ\n" + clearTime.ToString () + "びょう" +
-				"\n\nあなたは " + myStomp.ToString() + " ふみ" +
-				"\nともだちは " + otherStomp.ToString() + " ふみ";
+			str = "くりあたいむ\n" + clearTime.ToString () + "びょう"
+			//	+ "\n\nあなたは " + myStomp.ToString() + " ふみ" 
+			//	+ "\nともだちは " + otherStomp.ToString() + " ふみ"
+			;
 			break;
 
 		case GameManager.Status.GameOver:
