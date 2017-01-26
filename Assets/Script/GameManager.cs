@@ -13,7 +13,8 @@ public class GameManager : Photon.MonoBehaviour
 	public enum Status{
 		BeforeStart,
 		GameClear,
-		GameOver
+		GameOver,
+		Running,
 	}
 
 	/// <summary>
@@ -110,9 +111,7 @@ public class GameManager : Photon.MonoBehaviour
 	/// パラメータを初期化してタイトルシーンを読み込む
 	/// </summary>
 	private void Reset()
-	{
-
-			
+	{				
 		MultiPlayerManager.cList.ForEach( c => {
 			c.photonView.RPC ("Reset", PhotonTargets.All);
 		});
@@ -246,6 +245,7 @@ public class GameManager : Photon.MonoBehaviour
 		muscle.SetBGM(true);
 
 		running = true;
+		curStatus = Status.Running;
 	}
 
 	/// <summary>

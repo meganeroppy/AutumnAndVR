@@ -121,9 +121,9 @@ public class FallItem : Photon.MonoBehaviour {
 	/// <summary>
 	/// 収穫される
 	/// </summary>
-	/// <param name="byBag">カゴによる収穫か？</param>
+	/// <param name="byBag">プレイヤーにキャッチされたか？</param>
 	[PunRPC]
-	public void Harvest(bool byBag)
+	public void Harvest(bool caught)
 	{
 		if( !GameManager.instance.running )
 		{
@@ -132,20 +132,24 @@ public class FallItem : Photon.MonoBehaviour {
 
 		GameObject effect = null;
 
-		if(byBag){
+		// 良い結果か
+		bool positive;
+
+		if(caught){
 			// カゴにぶつかった
 
 			if( isGoodItem )
 			{
 				// 避けるべきアイテムのとき
-				Muscle.instance.Roar();
+
+				positive = false;
 			}
 			else
 			{
+				positive = true;
+
 				// キャッチするべきアイテムのとき
 				effect = Instantiate( effects[(int)EffectType.Catch] );
-
-				Muscle.instance.Enjoy();
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -155,21 +159,23 @@ public class FallItem : Photon.MonoBehaviour {
 			// 筋肉にぶつかった
 			if( isGoodItem )
 			{
+				positive = true;
+
 				// 避けるべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Happy] );
-
-				Muscle.instance.Enjoy();
 
 				GetComponent<AudioSource>().Play();
 			}
 			else
 			{
+				positive = false;
+
 				// キャッチするべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Damage] );	
-
-				Muscle.instance.Roar();
 			}				
 		}
+
+		Muscle.instance.ChangeRate(positive);
 
 		if( effect != null )
 		{

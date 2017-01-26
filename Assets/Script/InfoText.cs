@@ -96,7 +96,7 @@ public class InfoText : Photon.MonoBehaviour {
 	void UpdateText()
 	{
 		// ゲーム中は非表示
-		if (GameManager.instance.running || wait > 0) {
+		if ( wait > 0 ) {
 			textRenderer.enabled = false;
 			return;
 		}
@@ -176,6 +176,15 @@ public class InfoText : Photon.MonoBehaviour {
 			int diff = GameManager.instance.goalHeight - height;
 
 			str = "たいむおーばー\nとうたつこうど " + height.ToString() + "めーとる\n\nごーるまであと" + diff.ToString() + "めーとる";
+
+			break;
+
+		case GameManager.Status.Running:
+
+			var rate = Muscle.instance.joy_rate;
+			rate = Mathf.Round( rate * 10) / 10;
+
+			str = rate.ToString();
 
 			break;
 		}
