@@ -175,12 +175,6 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 						// コントローラを振動
 						cList.ForEach( c => c.VibrateController() );
 
-						// TODO: 演出
-						// 拾うべきアイテムのときだけ処理
-						if( !item.isGoodItem )
-						{
-								
-						}
 					}
 				}
 			}

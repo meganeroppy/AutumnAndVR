@@ -13,7 +13,7 @@ public class Muscle : Photon.MonoBehaviour
 	/// <summary>
 	/// 筋肉の現在高度
 	/// </summary>
-	public static float height;
+	public float height;
 
 	/// <summary>
 	/// 一回の上昇で 何M 上昇するか
@@ -85,6 +85,8 @@ public class Muscle : Photon.MonoBehaviour
 	private float joyTimer =0;
 	public void Enjoy()
 	{
+		PlaySe( vo_catch );
+
 		joy_rate *= 1.35f;
 		//Debug.Log(joy_rate);
 		joyTimer = 5;
@@ -216,7 +218,7 @@ public class Muscle : Photon.MonoBehaviour
 	/// 苦痛のうめき声
 	/// </summary>
 	/// <param name="pat">ボイスタイプ</param>
-	private void Roar()
+	public void Roar()
 	{
 		int key = Random.Range (0, se_roar.Length - 1);
 
@@ -270,22 +272,22 @@ public class Muscle : Photon.MonoBehaviour
 
 				c.Harvest(false);
 			
-				if( c.isGoodItem )
-				{
-					PlaySe(se_catch);
+			//	if( c.isGoodItem )
+			//	{
+			//		PlaySe(se_catch);
 
 					// 筋肉の喜び時間追加
-					Enjoy();
+			//		Enjoy();
 
 					// ボイス
-					PlaySe(vo_catch);
+			//		PlaySe(vo_catch);
 
 				}
 				else
 				{
-					Roar();
+			//		Roar();
 				}
-			}
+		//	}
 		}
 	}
 

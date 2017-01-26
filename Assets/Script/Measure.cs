@@ -27,7 +27,7 @@ public class Measure : MonoBehaviour {
 		int unitVal = GameManager.instance.measureExpInterval;
 
 		// 近くだけ表示
-		meshRenderer.enabled = Muscle.height > transform.position.y - unitVal && Muscle.height < transform.position.y + unitVal;
+		meshRenderer.enabled = Muscle.instance.height > transform.position.y - unitVal && Muscle.instance.height < transform.position.y + unitVal;
 
 		if (flag.gameObject.activeInHierarchy) {
 			flag.enabled = meshRenderer.enabled;
@@ -39,7 +39,7 @@ public class Measure : MonoBehaviour {
 		enablePrev = meshRenderer.enabled;
 
 		// 到達したら黄色
-		textMesh.color = Muscle.height >= transform.position.y ? Color.yellow : Color.red;
+		textMesh.color = Muscle.instance.height >= transform.position.y ? Color.yellow : Color.red;
 	}
 
 	void FrameIn()

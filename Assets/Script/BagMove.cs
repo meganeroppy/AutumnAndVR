@@ -91,7 +91,7 @@ public class BagMove : Photon.MonoBehaviour
 				{
 					// ローカルのみで良い
 					catchCount++;
-
+/*aa
 					// 効果音
 					GetComponent<AudioSource>().PlayOneShot(se_catch);
 
@@ -103,7 +103,7 @@ public class BagMove : Photon.MonoBehaviour
 					{
 						myMuscle.PlaySe(vo_catch);
 					}
-
+*/
 					// モデルの更新
 					SetModel();
 				}

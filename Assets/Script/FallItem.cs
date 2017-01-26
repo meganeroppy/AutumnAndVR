@@ -138,12 +138,16 @@ public class FallItem : Photon.MonoBehaviour {
 			if( isGoodItem )
 			{
 				// 避けるべきアイテムのとき
-				// なにもしない
+				Muscle.instance.Roar();
 			}
 			else
 			{
 				// キャッチするべきアイテムのとき
 				effect = Instantiate( effects[(int)EffectType.Catch] );
+
+				Muscle.instance.Enjoy();
+
+				GetComponent<AudioSource>().Play();
 			}
 
 			// コントローラを振動させる
@@ -153,11 +157,17 @@ public class FallItem : Photon.MonoBehaviour {
 			{
 				// 避けるべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Happy] );
+
+				Muscle.instance.Enjoy();
+
+				GetComponent<AudioSource>().Play();
 			}
 			else
 			{
 				// キャッチするべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Damage] );	
+
+				Muscle.instance.Roar();
 			}				
 		}
 

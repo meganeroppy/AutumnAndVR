@@ -172,7 +172,7 @@ public class InfoText : Photon.MonoBehaviour {
 
 		case GameManager.Status.GameOver:
 			// ゲームオーバー時
-			int height = (int)Muscle.height;
+			int height = (int)Muscle.instance.height;
 			int diff = GameManager.instance.goalHeight - height;
 
 			str = "たいむおーばー\nとうたつこうど " + height.ToString() + "めーとる\n\nごーるまであと" + diff.ToString() + "めーとる";

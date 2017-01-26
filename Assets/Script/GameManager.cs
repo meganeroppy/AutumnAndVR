@@ -264,7 +264,7 @@ public class GameManager : Photon.MonoBehaviour
 			FallItem.fList.Clear ();
 		}
 
-		int height = (int)Mathf.Floor( Muscle.height );
+		int height = (int)Mathf.Floor( Muscle.instance.height );
 		Debug.LogErrorFormat("時間切れ！あなたが到達した高度は{0}", height);
 
 		// BGM停止
