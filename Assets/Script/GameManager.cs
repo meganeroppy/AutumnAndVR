@@ -13,7 +13,8 @@ public class GameManager : Photon.MonoBehaviour
 	public enum Status{
 		BeforeStart,
 		GameClear,
-		GameOver
+		GameOver,
+		Running,
 	}
 
 	/// <summary>
@@ -103,13 +104,21 @@ public class GameManager : Photon.MonoBehaviour
 
 	void Start()
 	{
-		ResetParametersAndLoadTitleScene();
+		Reset();
 	}
 
 	/// <summary>
 	/// パラメータを初期化してタイトルシーンを読み込む
 	/// </summary>
-	public void ResetParametersAndLoadTitleScene()
+	private void Reset()
+	{				
+		MultiPlayerManager.cList.ForEach( c => {
+			c.photonView.RPC ("Reset", PhotonTargets.All);
+		});
+		//SceneManager.LoadSceneAsync("Title", LoadSceneMode.Additive);
+	}
+
+	public void ResetPrameter()
 	{
 		gameTimer = 0;
 
@@ -119,17 +128,11 @@ public class GameManager : Photon.MonoBehaviour
 		inStartingProcess = false;
 		catchCount = 0;
 
-		if (Muscle.instance != null) {
-			Muscle.instance.SetToOrigin ();
-		}
-
 		GameObject b = GameObject.Find ("Bag");
 		if( b != null )
 		{
 			b.GetComponent<BagMove>().InitModel();	
 		}
-			
-		//SceneManager.LoadSceneAsync("Title", LoadSceneMode.Additive);
 	}
 
 	void Update () 
@@ -144,6 +147,8 @@ public class GameManager : Photon.MonoBehaviour
 			CheckPlayersReady();
 		}
 
+		SwitchBg ();
+
 		if(!running)
 		{
 			return;
@@ -153,7 +158,6 @@ public class GameManager : Photon.MonoBehaviour
 
 		CheckInput();
 
-		SwitchBg ();
 	}
 
 	void SwitchBg()
@@ -241,6 +245,7 @@ public class GameManager : Photon.MonoBehaviour
 		muscle.SetBGM(true);
 
 		running = true;
+		curStatus = Status.Running;
 	}
 
 	/// <summary>
@@ -289,7 +294,7 @@ public class GameManager : Photon.MonoBehaviour
 		yield return WaitInput();
 
 		// タイトルに戻る
-		ResetParametersAndLoadTitleScene();
+		Reset();
 	}
 
 	/// <summary>
@@ -329,7 +334,7 @@ public class GameManager : Photon.MonoBehaviour
 		yield return WaitInput();
 
 		// タイトルに戻る
-		ResetParametersAndLoadTitleScene();
+		Reset();
 	}
 
 	/// <summary>
@@ -361,7 +366,7 @@ public class GameManager : Photon.MonoBehaviour
 			&& Input.GetKeyDown( KeyCode.Q ) )
 		{
 			// ctrl + Q で強制タイトル遷移
-			ResetParametersAndLoadTitleScene();
+			Reset();
 		}
 	}
 

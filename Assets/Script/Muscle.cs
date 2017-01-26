@@ -77,19 +77,30 @@ public class Muscle : Photon.MonoBehaviour
 	/// </summary>
 	public AudioClip vo_catch;
 
+	public float gainRate = 1.05f;
+	public float roseRate = 0.75f;
 
-	/// <summary>
-	/// 筋肉喜び中時間の残り秒
-	/// </summary>
-	[HideInInspector]
-	private float joyTimer =0;
-	public void Enjoy()
+	public float maxRate = 25f;
+	public float bottomRate = 1f;
+
+	public void ChangeRate( bool positive=true )
 	{
-		PlaySe( vo_catch );
+		float rate;
+		if( positive )
+		{
+			rate = gainRate;
 
-		joy_rate *= 1.35f;
-		//Debug.Log(joy_rate);
-		joyTimer = 5;
+			PlaySe( vo_catch );
+		}
+		else
+		{
+			rate = roseRate;
+
+			Roar();
+		}
+
+		joy_rate *= rate;
+		joy_rate = Mathf.Clamp( joy_rate, bottomRate, maxRate);
 	}
 
 	/// <summary>
@@ -137,30 +148,8 @@ public class Muscle : Photon.MonoBehaviour
 
 		// アイテムとのあたり判定をチェック
 		CheckCollisionFallItem();
-
-		ReduceJoyTimer ();
 	}
-
-	bool reduceOnce = false;
-
-	/// <summary>
-	/// 喜び時間減少
-	/// </summary>
-	void ReduceJoyTimer()
-	{
-		if (joyTimer >= 0) {
-			reduceOnce = false;
-			joyTimer -= Time.deltaTime;
-		}
-		else{
-			if( !reduceOnce )
-			{
-				joy_rate *= 0.5f;
-				reduceOnce = true;
-			}
-		}
-	}
-		
+				
 	/// <summary>
 	/// 毎フレームの上昇
 	/// </summary>
@@ -170,11 +159,7 @@ public class Muscle : Photon.MonoBehaviour
 			return;
 		}
 
-		var val = ascend_value;
-		if( joyTimer > 0 )
-		{
-			val *= 	joy_rate;
-		}
+		var val = ascend_value * joy_rate;
 
 		height += val * Time.deltaTime;
 
@@ -202,23 +187,10 @@ public class Muscle : Photon.MonoBehaviour
 	}
 
 	/// <summary>
-	/// エネルギーを加算
-	/// </summary>
-	public void AddEnergy(int val, CrewMove sender)
-	{
-		Debug.Log("プレイヤー[ " + sender.photonView.ownerId.ToString() + " ]がエネルギーを加算");
-		energy += val ;
-		if( energy >= ascend_cost ){
-			Ascend();
-			energy -= ascend_cost;
-		}
-	}
-
-	/// <summary>
 	/// 苦痛のうめき声
 	/// </summary>
 	/// <param name="pat">ボイスタイプ</param>
-	public void Roar()
+	private void Roar()
 	{
 		int key = Random.Range (0, se_roar.Length - 1);
 
@@ -271,23 +243,7 @@ public class Muscle : Photon.MonoBehaviour
 				Debug.Log("アイテムが筋肉にヒット！");
 
 				c.Harvest(false);
-			
-			//	if( c.isGoodItem )
-			//	{
-			//		PlaySe(se_catch);
-
-					// 筋肉の喜び時間追加
-			//		Enjoy();
-
-					// ボイス
-			//		PlaySe(vo_catch);
-
-				}
-				else
-				{
-			//		Roar();
-				}
-		//	}
+			}
 		}
 	}
 
@@ -300,6 +256,7 @@ public class Muscle : Photon.MonoBehaviour
 		height = transform.position.y;
 		energy = 0;
 		clearText.gameObject.SetActive (false);
+		joy_rate = 1f;
 	}
 
 	/// <summary>

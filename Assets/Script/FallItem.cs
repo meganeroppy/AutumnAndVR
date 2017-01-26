@@ -73,11 +73,6 @@ public class FallItem : Photon.MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if( !PhotonNetwork.isMasterClient )
-		{
-		//	return;
-		}
-
 		UpdatePosition();
 		UpdateRotation();
 		UpdateLifeTimer();
@@ -108,44 +103,38 @@ public class FallItem : Photon.MonoBehaviour {
 		if( timer >= lifeTime )
 		{
 			harvested = true;
-			//if( PhotonNetwork.isMasterClient )
-			//{
-			//	PhotonNetwork.Destroy(gameObject);
-			//}
 			Destroy(gameObject);
-
-			Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを削除");
+			//Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを削除");
 		}
 	}
 
 	/// <summary>
 	/// 収穫される
 	/// </summary>
-	/// <param name="byBag">カゴによる収穫か？</param>
+	/// <param name="byBag">プレイヤーにキャッチされたか？</param>
 	[PunRPC]
-	public void Harvest(bool byBag)
+	public void Harvest(bool caught)
 	{
-		if( !GameManager.instance.running )
-		{
-		//	return;
-		}
-
 		GameObject effect = null;
 
-		if(byBag){
-			// カゴにぶつかった
+		// 良い結果か
+		bool positive;
 
+		if(caught)
+		{
+			// カゴにぶつかった
 			if( isGoodItem )
 			{
 				// 避けるべきアイテムのとき
-				Muscle.instance.Roar();
+
+				positive = false;
 			}
 			else
 			{
+				positive = true;
+
 				// キャッチするべきアイテムのとき
 				effect = Instantiate( effects[(int)EffectType.Catch] );
-
-				Muscle.instance.Enjoy();
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -155,21 +144,23 @@ public class FallItem : Photon.MonoBehaviour {
 			// 筋肉にぶつかった
 			if( isGoodItem )
 			{
+				positive = true;
+
 				// 避けるべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Happy] );
-
-				Muscle.instance.Enjoy();
 
 				GetComponent<AudioSource>().Play();
 			}
 			else
 			{
+				positive = false;
+
 				// キャッチするべきアイテム
 				effect = Instantiate( effects[(int)EffectType.Damage] );	
-
-				Muscle.instance.Roar();
 			}				
 		}
+
+		Muscle.instance.ChangeRate(positive);
 
 		if( effect != null )
 		{

@@ -96,7 +96,7 @@ public class InfoText : Photon.MonoBehaviour {
 	void UpdateText()
 	{
 		// ゲーム中は非表示
-		if (GameManager.instance.running || wait > 0) {
+		if ( wait > 0 ) {
 			textRenderer.enabled = false;
 			return;
 		}
@@ -149,25 +149,8 @@ public class InfoText : Photon.MonoBehaviour {
 			// ゲームクリア時
 			int clearTime = ((int)GameManager.instance.gameTimer);
 			int catchCount = GameManager.instance.catchCount;
-			int myStomp = 0;
-			int otherStomp = 0;
-			for( int i=0 ; i< MultiPlayerManager.cList.Count ; i++ )
-			{
-				CrewMove c = MultiPlayerManager.cList[i];
-				if ( c.photonView.isMine )
-				{
-					myStomp = c.stompCount;
-				}
-				else
-				{
-					otherStomp = c.stompCount;
-				}
-			}
 
-			str = "くりあたいむ\n" + clearTime.ToString () + "びょう"
-			//	+ "\n\nあなたは " + myStomp.ToString() + " ふみ" 
-			//	+ "\nともだちは " + otherStomp.ToString() + " ふみ"
-			;
+			str = "くりあたいむ\n" + clearTime.ToString () + "びょう";
 			break;
 
 		case GameManager.Status.GameOver:
@@ -176,6 +159,15 @@ public class InfoText : Photon.MonoBehaviour {
 			int diff = GameManager.instance.goalHeight - height;
 
 			str = "たいむおーばー\nとうたつこうど " + height.ToString() + "めーとる\n\nごーるまであと" + diff.ToString() + "めーとる";
+
+			break;
+
+		case GameManager.Status.Running:
+
+			var rate = Muscle.instance.joy_rate;
+			rate = Mathf.Round( rate * 10) / 10;
+
+			str = rate.ToString();
 
 			break;
 		}
