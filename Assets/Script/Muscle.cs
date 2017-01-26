@@ -244,15 +244,15 @@ public class Muscle : Photon.MonoBehaviour
 	/// </summary>
 	void CheckCollisionFallItem()
 	{
-		if(FallItem.cList == null)
+		if(FallItem.fList == null)
 		{
 			return;
 		}
 
 		float dist; 
-		for(int i=0 ; i < FallItem.cList.Count ; i++)
+		for(int i=0 ; i < FallItem.fList.Count ; i++)
 		{
-			FallItem c = FallItem.cList[i];
+			FallItem c = FallItem.fList[i];
 
 			if (c == null) {
 				continue;

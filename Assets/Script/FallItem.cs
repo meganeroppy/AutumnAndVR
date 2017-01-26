@@ -10,7 +10,7 @@ public class FallItem : Photon.MonoBehaviour {
 	/// <summary>
 	/// イガグリリスト
 	/// </summary>
-	public static List<FallItem> cList;
+	public static List<FallItem> fList;
 
 	/// <summary>
 	/// 落下スピード
@@ -55,12 +55,12 @@ public class FallItem : Photon.MonoBehaviour {
 
 	void Awake()
 	{
-		if( cList == null)
+		if( fList == null)
 		{
-			cList = new List<FallItem>();
+			fList = new List<FallItem>();
 		}
 
-		cList.Add(this);
+		fList.Add(this);
 
 		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを生成");
 
@@ -145,6 +145,8 @@ public class FallItem : Photon.MonoBehaviour {
 				// キャッチするべきアイテムのとき
 				effect = Instantiate( effects[(int)EffectType.Catch] );
 			}
+
+			// コントローラを振動させる
 		}else{
 			// 筋肉にぶつかった
 			if( isGoodItem )

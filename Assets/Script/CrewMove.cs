@@ -46,9 +46,9 @@ public class CrewMove : Photon.MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		MultiPlayerManager.crews.Add(this);
+		MultiPlayerManager.cList.Add(this);
 
-		if( !photonView.isMine || ( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) ))
+		if( !photonView.isMine || ( GameManager.instance.singleMode && !MultiPlayerManager.cList.IndexOf(this).Equals(0) ))
 		{
 			notNeededObjForOther.ForEach( g => g.SetActive(false) );
 			to.ForEach( g => g.enabled = false );
@@ -73,7 +73,7 @@ public class CrewMove : Photon.MonoBehaviour {
 
 		Transform t = photonViewId == 1 ? myMuscle.pos1 : myMuscle.pos2;
 
-		if( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) )
+		if( GameManager.instance.singleMode && !MultiPlayerManager.cList.IndexOf(this).Equals(0) )
 		{
 			t = myMuscle.pos2;
 		}
@@ -100,7 +100,7 @@ public class CrewMove : Photon.MonoBehaviour {
 		}
 
 		// シングルモードの２PはInput無視
-		if( GameManager.instance.singleMode && !MultiPlayerManager.crews.IndexOf(this).Equals(0) )
+		if( GameManager.instance.singleMode && !MultiPlayerManager.cList.IndexOf(this).Equals(0) )
 		{
 			return;
 		}
@@ -119,7 +119,7 @@ public class CrewMove : Photon.MonoBehaviour {
 		var moveX = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
 		var moveZ = Input.GetAxisRaw("Vertical") * speed * Time.deltaTime;
 
-		// 左Shiftお押しながらの操作あ左手
+		// 左Shiftお押しながらの操作は左手
 		int handIdx = Input.GetKey( KeyCode.LeftShift ) ? 1 : 0;
 
 		Transform targetHand = (hands[handIdx].gameObject.activeInHierarchy ? hands[handIdx].transform : dummyHands[handIdx] );
@@ -133,19 +133,42 @@ public class CrewMove : Photon.MonoBehaviour {
 			U_count++;
 		//	PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
 		}
+			
+		for( int i=0 ; i< hands.Count ; i++ )
+		{
+			var device = SteamVR_Controller.Input((int) hands[ i ].index);
 
-		var device = SteamVR_Controller.Input((int) hands[ handIdx ].index);
-
-		if( device != null )
-		{			
-			if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger)) {
-				photonView.RPC ("SetReady", PhotonTargets.All, true);
-			}
-			if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger)) {
-				photonView.RPC ("SetReady", PhotonTargets.All, true);
+			if( device != null )
+			{			
+				if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger)) {
+					photonView.RPC ("SetReady", PhotonTargets.All, true);
+				}
+				if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger)) {
+					photonView.RPC ("SetReady", PhotonTargets.All, true);
+				}
 			}
 		}
+	}
 
+	/// <summary>
+	/// コントローラを振動させる
+	/// </summary>
+	public void VibrateController()
+	{
+		if( hands == null )
+		{
+			return;
+		}
+
+		for( int i=0 ; i< hands.Count ; i++ )
+		{
+			var device = SteamVR_Controller.Input((int) hands[ i ].index);
+
+			if( device != null )
+			{			
+				device.TriggerHapticPulse();
+			}
+		}
 	}
 
 	/// <summary>
@@ -169,7 +192,7 @@ public class CrewMove : Photon.MonoBehaviour {
 		}
 
 		int sum = 0;
-		MultiPlayerManager.crews.ForEach( c => sum += c.stompCount );
+		MultiPlayerManager.cList.ForEach( c => sum += c.stompCount );
 
 		Debug.Log( "全プレイヤーの合計カウント = " + sum.ToString());
 	}

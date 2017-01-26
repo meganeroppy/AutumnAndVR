@@ -59,15 +59,15 @@ public class BagMove : Photon.MonoBehaviour
 
 	void CheckFallItem()
 	{
-		if(FallItem.cList == null)
+		if(FallItem.fList == null)
 		{
 			return;
 		}
 
 		float dist; 
-		for(int i=0 ; i < FallItem.cList.Count ; i++)
+		for(int i=0 ; i < FallItem.fList.Count ; i++)
 		{
-			FallItem c = FallItem.cList[i];
+			FallItem c = FallItem.fList[i];
 
 			if (c == null) {
 				continue;

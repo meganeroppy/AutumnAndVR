@@ -16,7 +16,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 	public Transform pos2;
 
-	public static List<CrewMove> crews = new List<CrewMove>();
+	public static List<CrewMove> cList = new List<CrewMove>();
 
 	GameObject bag;
 
@@ -97,9 +97,9 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 			Vector3 bagPos = Vector3.zero;
 			var handCount = 0;
-			for( int i=0 ; i< crews.Count ; i++)
+			for( int i=0 ; i< cList.Count ; i++)
 			{
-				var crew = crews[i];
+				var crew = cList[i];
 				if( crew == null )
 				{
 					Debug.Log("プレイヤーがnull");
@@ -124,9 +124,9 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 			{
 				// 手が定義されていなければ取得する
 
-				for( int i=0 ; i< crews.Count ; i++)
+				for( int i=0 ; i< cList.Count ; i++)
 				{
-					var crew = crews[i];
+					var crew = cList[i];
 					if( crew == null )
 					{
 						Debug.Log("プレイヤーがnull");
@@ -151,15 +151,15 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				defineHandObjects = true;
 			}
 				
-			if(FallItem.cList == null)
+			if(FallItem.fList == null)
 			{
 				return;
 			}
 
 			// ここからキャッチ判定
-			for(int i=0 ; i < FallItem.cList.Count ; i++)
+			for(int i=0 ; i < FallItem.fList.Count ; i++)
 			{
-				var item = FallItem.cList[i];
+				var item = FallItem.fList[i];
 				if( item == null )
 				{
 					continue;
@@ -172,6 +172,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 						Debug.Log( item.name + "をキャッチ！");
 						item.Harvest(true);
 
+						// コントローラを振動
+						cList.ForEach( c => c.VibrateController() );
 
 						// TODO: 演出
 						// 拾うべきアイテムのときだけ処理

@@ -160,9 +160,9 @@ public class GameManager : Photon.MonoBehaviour
 	{
 		// いずれかのプレイヤーが雲の高さに到達したら拝啓差し替え
 		bool overSky = false;
-		for (int i = 0; i < MultiPlayerManager.crews.Count; i++) 
+		for (int i = 0; i < MultiPlayerManager.cList.Count; i++) 
 		{
-			if (MultiPlayerManager.crews [i].transform.position.y > cloud.position.y)
+			if (MultiPlayerManager.cList [i].transform.position.y > cloud.position.y)
 			{
 				overSky = true;
 				break;
@@ -194,24 +194,24 @@ public class GameManager : Photon.MonoBehaviour
 
 	void CheckPlayersReady()
 	{
-		if( MultiPlayerManager.crews == null )
+		if( MultiPlayerManager.cList == null )
 		{
 			return;
 		}
 
-		if(  MultiPlayerManager.crews.Count < MultiPlayerManager.playerNumNeeded )
+		if(  MultiPlayerManager.cList.Count < MultiPlayerManager.playerNumNeeded )
 		{
 			return;
 		}
 
-		if( singleMode && MultiPlayerManager.crews[0].ready )
+		if( singleMode && MultiPlayerManager.cList[0].ready )
 		{
 		}
 		else
 		{
-			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+			for( int i=0 ; i< MultiPlayerManager.cList.Count ; i++ )
 			{
-				if ( !MultiPlayerManager.crews[i].ready )
+				if ( !MultiPlayerManager.cList[i].ready )
 				{
 					return;
 				}
@@ -254,14 +254,14 @@ public class GameManager : Photon.MonoBehaviour
 		curStatus = Status.GameOver;
 		running = false;
 
-		if (FallItem.cList != null) {
-			for (int i = FallItem.cList.Count - 1; i >= 0; i--) {
-				var c = FallItem.cList [i];
+		if (FallItem.fList != null) {
+			for (int i = FallItem.fList.Count - 1; i >= 0; i--) {
+				var c = FallItem.fList [i];
 				if (c != null) {
 					Destroy (c.gameObject);
 				}
 			}
-			FallItem.cList.Clear ();
+			FallItem.fList.Clear ();
 		}
 
 		int height = (int)Mathf.Floor( Muscle.height );
@@ -297,14 +297,14 @@ public class GameManager : Photon.MonoBehaviour
 	/// </summary>
 	public IEnumerator ShowGameClearExpression()
 	{
-		if (FallItem.cList != null) {
-			for (int i = FallItem.cList.Count - 1; i >= 0; i--) {
-				var c = FallItem.cList [i];
+		if (FallItem.fList != null) {
+			for (int i = FallItem.fList.Count - 1; i >= 0; i--) {
+				var c = FallItem.fList [i];
 				if (c != null) {
 					Destroy (c.gameObject);
 				}
 			}
-			FallItem.cList.Clear ();
+			FallItem.fList.Clear ();
 		}
 
 		Debug.LogError("ゴール！！");

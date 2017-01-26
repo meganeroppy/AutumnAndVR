@@ -46,7 +46,7 @@ public class InfoText : Photon.MonoBehaviour {
 
 		while(true)
 		{
-			if(MultiPlayerManager.crews == null || MultiPlayerManager.crews.Count <= 0)
+			if(MultiPlayerManager.cList == null || MultiPlayerManager.cList.Count <= 0)
 			{
 				yield return null;	
 			}
@@ -59,7 +59,7 @@ public class InfoText : Photon.MonoBehaviour {
 		CrewMove target = null;
 
 		// 自分が操作するプレイヤーを取得
-		foreach( CrewMove c in MultiPlayerManager.crews)
+		foreach( CrewMove c in MultiPlayerManager.cList)
 		{
 			if( c.photonView.isMine )
 			{
@@ -128,11 +128,11 @@ public class InfoText : Photon.MonoBehaviour {
 				
 			bool ready1p = false;
 			bool ready2p = false;
-			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+			for( int i=0 ; i< MultiPlayerManager.cList.Count ; i++ )
 			{
-				CrewMove c = MultiPlayerManager.crews[i];
+				CrewMove c = MultiPlayerManager.cList[i];
 				if ( (!GameManager.instance.singleMode && c.photonView.ownerId == 1)
-					|| (GameManager.instance.singleMode && MultiPlayerManager.crews.IndexOf(c).Equals(0) )
+					|| (GameManager.instance.singleMode && MultiPlayerManager.cList.IndexOf(c).Equals(0) )
 				)
 				{
 					ready1p = c.ready;
@@ -151,9 +151,9 @@ public class InfoText : Photon.MonoBehaviour {
 			int catchCount = GameManager.instance.catchCount;
 			int myStomp = 0;
 			int otherStomp = 0;
-			for( int i=0 ; i< MultiPlayerManager.crews.Count ; i++ )
+			for( int i=0 ; i< MultiPlayerManager.cList.Count ; i++ )
 			{
-				CrewMove c = MultiPlayerManager.crews[i];
+				CrewMove c = MultiPlayerManager.cList[i];
 				if ( c.photonView.isMine )
 				{
 					myStomp = c.stompCount;
