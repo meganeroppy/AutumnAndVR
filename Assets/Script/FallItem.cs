@@ -73,11 +73,6 @@ public class FallItem : Photon.MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if( !PhotonNetwork.isMasterClient )
-		{
-		//	return;
-		}
-
 		UpdatePosition();
 		UpdateRotation();
 		UpdateLifeTimer();
@@ -108,13 +103,8 @@ public class FallItem : Photon.MonoBehaviour {
 		if( timer >= lifeTime )
 		{
 			harvested = true;
-			//if( PhotonNetwork.isMasterClient )
-			//{
-			//	PhotonNetwork.Destroy(gameObject);
-			//}
 			Destroy(gameObject);
-
-			Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを削除");
+			//Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを削除");
 		}
 	}
 
@@ -125,19 +115,14 @@ public class FallItem : Photon.MonoBehaviour {
 	[PunRPC]
 	public void Harvest(bool caught)
 	{
-		if( !GameManager.instance.running )
-		{
-		//	return;
-		}
-
 		GameObject effect = null;
 
 		// 良い結果か
 		bool positive;
 
-		if(caught){
+		if(caught)
+		{
 			// カゴにぶつかった
-
 			if( isGoodItem )
 			{
 				// 避けるべきアイテムのとき

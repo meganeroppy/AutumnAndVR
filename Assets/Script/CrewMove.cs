@@ -38,11 +38,6 @@ public class CrewMove : Photon.MonoBehaviour {
 
 	private Vector3 offsetHeightFromMuscle;
 
-	/// <summary>
-	/// ふみつけカウント
-	/// </summary>
-	public int stompCount { private set; get;}
-
 	// Use this for initialization
 	void Start () 
 	{
@@ -64,7 +59,6 @@ public class CrewMove : Photon.MonoBehaviour {
 		{
 			notNeededObjForMe.ForEach( g => g.SetActive(false) );
 		}
-
 
 		myMuscle = GameObject.Find("Muscle").GetComponent<Muscle>();
 
@@ -106,8 +100,6 @@ public class CrewMove : Photon.MonoBehaviour {
 		}
 
 		GetInput();
-
-//		CheckItemCatchBySquare();
 	}
 		
 	void GetInput()
@@ -131,7 +123,6 @@ public class CrewMove : Photon.MonoBehaviour {
 			Debug.Log("Uが押された プレイヤーID = " + PhotonNetwork.player.ID.ToString());
 			myMuscle.joy_rate *= 1.1f;
 			U_count++;
-		//	PhotonNetwork.RPC(photonView, "AddStompCount", PhotonTargets.All, false);
 		}
 			
 		for( int i=0 ; i< hands.Count ; i++ )
@@ -169,32 +160,6 @@ public class CrewMove : Photon.MonoBehaviour {
 				device.TriggerHapticPulse();
 			}
 		}
-	}
-
-	/// <summary>
-	/// 踏みつけ回数を加算
-	/// </summary>
-	[PunRPC]
-	public void AddStompCount()
-	{
-		if( !GameManager.instance.running )
-		{
-			Debug.Log("ゲームは終了済み。カウント追加は無効");
-		}
-
-		stompCount++;
-		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "のカウント=" + stompCount.ToString());
-
-		if( myMuscle != null ){
-			myMuscle.AddEnergy(1, this);
-		}else{
-			Debug.Log( "myMuscleがnull" );
-		}
-
-		int sum = 0;
-		MultiPlayerManager.cList.ForEach( c => sum += c.stompCount );
-
-		Debug.Log( "全プレイヤーの合計カウント = " + sum.ToString());
 	}
 
 	/// <summary>

@@ -187,19 +187,6 @@ public class Muscle : Photon.MonoBehaviour
 	}
 
 	/// <summary>
-	/// エネルギーを加算
-	/// </summary>
-	public void AddEnergy(int val, CrewMove sender)
-	{
-		Debug.Log("プレイヤー[ " + sender.photonView.ownerId.ToString() + " ]がエネルギーを加算");
-		energy += val ;
-		if( energy >= ascend_cost ){
-			Ascend();
-			energy -= ascend_cost;
-		}
-	}
-
-	/// <summary>
 	/// 苦痛のうめき声
 	/// </summary>
 	/// <param name="pat">ボイスタイプ</param>

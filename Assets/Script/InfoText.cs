@@ -149,25 +149,8 @@ public class InfoText : Photon.MonoBehaviour {
 			// ゲームクリア時
 			int clearTime = ((int)GameManager.instance.gameTimer);
 			int catchCount = GameManager.instance.catchCount;
-			int myStomp = 0;
-			int otherStomp = 0;
-			for( int i=0 ; i< MultiPlayerManager.cList.Count ; i++ )
-			{
-				CrewMove c = MultiPlayerManager.cList[i];
-				if ( c.photonView.isMine )
-				{
-					myStomp = c.stompCount;
-				}
-				else
-				{
-					otherStomp = c.stompCount;
-				}
-			}
 
-			str = "くりあたいむ\n" + clearTime.ToString () + "びょう"
-			//	+ "\n\nあなたは " + myStomp.ToString() + " ふみ" 
-			//	+ "\nともだちは " + otherStomp.ToString() + " ふみ"
-			;
+			str = "くりあたいむ\n" + clearTime.ToString () + "びょう";
 			break;
 
 		case GameManager.Status.GameOver:

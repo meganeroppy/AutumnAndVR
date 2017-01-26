@@ -58,8 +58,8 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 
 		if( CheckTimer() )
 		{
-			PhotonNetwork.RPC(photonView, "Generate", PhotonTargets.All, false);
-			// Generate()
+		//	PhotonNetwork.RPC(photonView, "Generate", PhotonTargets.All, false);
+			Generate();
 		}
 	}
 
@@ -80,15 +80,12 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 	/// <summary>
 	/// 落下アイテムを生成
 	/// </summary>
-	[PunRPC]
 	void Generate()
 	{
 		Debug.Log("マスタープレイヤー[ " + PhotonNetwork.player.ID + " ]がアイテムを生成");
 
-
 		//　生成位置を決定
 		Vector3 pos = new Vector3(transform.position.x + Random.Range( -diffRange.x, diffRange.x ), transform.position.y, transform.position.z + Random.Range( -diffRange.y, diffRange.y ));
-
 
 		bool isGoodItem = Random.Range(0, 4).Equals(0);
 
@@ -100,7 +97,6 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 		else
 		{
 			PhotonNetwork.Instantiate("Chestnut", pos, Quaternion.identity, 0);
-			//Instantiate(chestnut, pos, Quaternion.identity);
 		}
 
 		// SEを再生
