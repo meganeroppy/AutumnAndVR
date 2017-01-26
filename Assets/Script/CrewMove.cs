@@ -197,11 +197,25 @@ public class CrewMove : Photon.MonoBehaviour {
 		Debug.Log( "全プレイヤーの合計カウント = " + sum.ToString());
 	}
 
+	/// <summary>
+	/// 準備完了状態かのフラグをセット
+	/// </summary>
 	[PunRPC]
 	void SetReady(bool value)
 	{
 		Debug.Log ("PhotonViewID[ " + photonView.viewID.ToString () + " ]のreadyを" + value.ToString ());
 		ready = value;
+	}
+
+	/// <summary>
+	/// マッチョの位置をリセット
+	/// </summary>
+	[PunRPC]
+	void Reset()
+	{
+		Muscle.instance.SetToOrigin();
+		ready = false;
+		GameManager.instance.ResetPrameter();
 	}
 
 	/// <summary>
