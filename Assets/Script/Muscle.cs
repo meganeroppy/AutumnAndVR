@@ -300,6 +300,8 @@ public class Muscle : Photon.MonoBehaviour
 		height = transform.position.y;
 		energy = 0;
 		clearText.gameObject.SetActive (false);
+		joy_rate = 1f;
+		joyTimer = 0;
 	}
 
 	/// <summary>
