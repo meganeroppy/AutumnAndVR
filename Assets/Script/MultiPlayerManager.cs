@@ -135,6 +135,9 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 					for( int j=0 ; j < crew.handCount ; j++ )
 					{
+						if (!crew.handInitialized) {
+							return;
+						}
 						var h = crew.GetHand( j );
 						if( h == null )
 						{
@@ -149,6 +152,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 					return;
 				}
 				defineHandObjects = true;
+
+				Debug.LogError("手の数が揃いました！ 手の数 -> [ " + hands.Count.ToString() + " ]");
 			}
 				
 			if(FallItem.fList == null)

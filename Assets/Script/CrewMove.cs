@@ -38,8 +38,14 @@ public class CrewMove : Photon.MonoBehaviour {
 
 	private Vector3 offsetHeightFromMuscle;
 
+	void Start()
+	{
+		handInitialized = false;
+		StartCoroutine ( StartLoad() );
+	}
+
 	// Use this for initialization
-	void Start () 
+	IEnumerator StartLoad () 
 	{
 		MultiPlayerManager.cList.Add(this);
 
@@ -76,11 +82,41 @@ public class CrewMove : Photon.MonoBehaviour {
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 
-		// 有効になっている手が存在するか
-		bool isActiveHands = hands.Find( h => { return h.gameObject.activeInHierarchy; } ) != null;
+		bool isActiveViveControllers = false;
 
-		// 右手が無効だったらダミーハンドを使用
-		dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveHands ); } );
+		var waitCount = 0;
+		var maxWait = 10;
+		while (true ) 
+		{
+			if ( waitCount >= maxWait || Input.GetKey (KeyCode.D)) 
+			{
+				break;
+			}
+
+			bool allHandActive = true;
+			for (int i = 0; i < hands.Count; i++) 
+			{
+				var h = hands [i];
+				if (!h.gameObject.activeInHierarchy) {
+					allHandActive = false;
+					Debug.LogWarning (h.gameObject.name + "が非アクティブ状態");
+				}
+			}
+
+			if (allHandActive) 
+			{
+				Debug.Log ("すべてのViveコントローラーを検出");
+				isActiveViveControllers = true;
+				break;
+			}
+
+			Debug.LogWarning ("有効になっているViveコントローラの数が足りないので待機します [ D ]キーでデバッグ用キーボード操作に移行します");
+			yield return new WaitForSeconds(1);
+			waitCount++;
+		}
+
+		// Viveコントローラが無効だったらダミーハンドを使用
+		dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
 
 		photonView.RPC ("SetReady", PhotonTargets.All, false);
 	}
@@ -191,6 +227,8 @@ public class CrewMove : Photon.MonoBehaviour {
 	{	
 		return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] );
 	}
+
+	public bool handInitialized = false;
 
 	public int handCount{
 		get{
