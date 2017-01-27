@@ -146,7 +146,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 						// ラインレンダラー付与
 						if (h.GetComponent<LineRenderer> () == null) {
-							h.gameObject.AddComponent<LineRenderer> ();
+							var lr = h.gameObject.AddComponent<LineRenderer> ();
+							lr.SetWidth (0.1f, 0.1f);
 						}
 						hands.Add( h );
 					}
