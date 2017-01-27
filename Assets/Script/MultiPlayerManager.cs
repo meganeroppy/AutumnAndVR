@@ -119,10 +119,10 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 		}
 		else
 		{
-
 			if( !defineHandObjects )
 			{
 				// 手が定義されていなければ取得する
+				hands.Clear();
 
 				for( int i=0 ; i< cList.Count ; i++)
 				{
@@ -143,6 +143,11 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 						{
 							return;
 						}
+
+						// ラインレンダラー付与
+						if (h.GetComponent<LineRenderer> () == null) {
+							h.gameObject.AddComponent<LineRenderer> ();
+						}
 						hands.Add( h );
 					}
 				}
@@ -156,12 +161,15 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				Debug.LogError("手の数が揃いました！ 手の数 -> [ " + hands.Count.ToString() + " ]");
 			}
 				
+			// 光線描画処理
+			DrawLine();
+
 			if(FallItem.fList == null)
 			{
 				return;
 			}
 
-			// ここからキャッチ判定
+			// ここからキャッチ判定と光線描画
 			for(int i=0 ; i < FallItem.fList.Count ; i++)
 			{
 				var item = FallItem.fList[i];
@@ -179,12 +187,44 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 						// コントローラを振動
 						cList.ForEach( c => c.VibrateController() );
-
 					}
 				}
 			}
+				
 
 		}
 
+
+
+
+	}
+
+	/// <summary>
+	/// 光線を描画
+	/// </summary>
+	private void DrawLine()
+	{
+		if( hands == null)
+		{
+			return;
+		}
+
+		for (int idx = 0; idx < hands.Count; idx++) {
+			var hand = hands [idx];
+			if (hand == null) {
+				continue;
+			}
+			var lr = hand.GetComponent<LineRenderer> ();
+			if (lr == null) {
+				Debug.LogError( hand.gameObject.name + "にLineRendererがアタッチされていない");
+				continue;
+			}
+
+			var targetIdx = idx >= hands.Count - 1 ? 0 : idx + 1;
+			var targetPos = hands [targetIdx].position;
+		
+			lr.SetPosition (0, hand.position);
+			lr.SetPosition (1, targetPos);
+		}
 	}
 }

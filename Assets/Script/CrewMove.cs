@@ -115,8 +115,9 @@ public class CrewMove : Photon.MonoBehaviour {
 			waitCount++;
 		}
 
-		// Viveコントローラが無効だったらダミーハンドを使用
+		// Vが無効だったらダミーハンドを使用
 		dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
+		handInitialized = true;
 
 		photonView.RPC ("SetReady", PhotonTargets.All, false);
 	}
