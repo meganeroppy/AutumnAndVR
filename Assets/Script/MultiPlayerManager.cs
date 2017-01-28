@@ -126,6 +126,11 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				// 手が定義されていなければ取得する
 				hands.Clear();
 
+				if (cList.Count < playerNumNeeded) {
+					Debug.LogWarning ("プレイヤー数不足[ " + cList.Count.ToString()  + " / " + playerNumNeeded.ToString() + " ]");
+					return;
+				}
+
 				for( int i=0 ; i< cList.Count ; i++)
 				{
 					var crew = cList[i];
@@ -149,7 +154,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 						// ラインレンダラー付与
 						if (h.GetComponent<LineRenderer> () == null) {
 							var lr = h.gameObject.AddComponent<LineRenderer> ();
-							lr.SetWidth (0.5f, 0.5f);
+							lr.SetWidth (0.2f, 0.2f);
 							lr.material = safeLineMat;
 						}
 						hands.Add( h );
