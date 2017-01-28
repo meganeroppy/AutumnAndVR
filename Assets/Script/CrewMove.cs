@@ -40,10 +40,12 @@ public class CrewMove : Photon.MonoBehaviour {
 
 	Muscle myMuscle;
 
+	[HideInInspector]
 	public bool handInitialized = false;
 
 	private bool isActiveViveControllers = false;
 
+	[HideInInspector]
 	public bool playerSettingDefined = false;
 
 	public int handCount{
@@ -119,26 +121,28 @@ public class CrewMove : Photon.MonoBehaviour {
 					var h = hands [i];
 					if (!h.gameObject.activeInHierarchy) {
 						allHandActive = false;
-						Debug.LogWarning (h.gameObject.name + "が非アクティブ状態");
+						Debug.LogWarning ("[YOU]" + h.gameObject.name + "が非アクティブ状態");
 					}
 				}
 
 				if (allHandActive) {
-					Debug.Log ("すべてのViveコントローラーを検出");
+					Debug.Log ("[YOU]すべてのViveコントローラーを検出");
 					break;
 				}
 
-				Debug.LogWarning ("有効になっているViveコントローラの数が足りないので待機します 有効コントローラ数 -> [ " + hands.Count.ToString() + " ] [ D ]キーでデバッグ用キーボード操作に移行します");
+				Debug.LogWarning ("[YOU]有効になっているViveコントローラの数が足りないので待機します 有効コントローラ数 -> [ " + hands.Count.ToString() + " ] [ D ]キーでデバッグ用キーボード操作に移行します");
 				yield return new WaitForSeconds (1);
 				waitCount++;
 			}
 				
 			// Viveコントローラが無効だったらダミーハンドを使用
 			dummyHands.ForEach( h => { h.gameObject.SetActive( !allHandActive ); } );
-			Debug.LogWarning ("あなたは" + (allHandActive ? "Viveコントローラ" : "キーボード") + "で操作します");
+			Debug.LogWarning ("[YOU]" + (allHandActive ? "Viveコントローラ" : "キーボード") + "で操作します");
 
-			photonView.RPC ("SetReady", PhotonTargets.All, false);
-			photonView.RPC ("SetViveControllerStatus", PhotonTargets.All, allHandActive);
+			photonView.RPC ("SetReady", PhotonTargets.AllBuffered, false);
+		//	SetReady( false );
+			photonView.RPC ("SetViveControllerStatus", PhotonTargets.AllBuffered, allHandActive);
+		//	SetViveControllerStatus( allHandActive );
 		} else {
 			// 相手の場合
 			while (!GameManager.instance.singleMode && !playerSettingDefined) {
@@ -149,7 +153,7 @@ public class CrewMove : Photon.MonoBehaviour {
 
 			// Viveコントローラが無効だったらダミーハンドを使用
 			dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
-			Debug.LogWarning ("相手のプレイヤーは" + (isActiveViveControllers ? "Viveコントローラ" : "キーボード") + "で操作します");
+			Debug.LogWarning ("[OTHER]" + (isActiveViveControllers ? "Viveコントローラ" : "キーボード") + "で操作します");
 		}
 
 		handInitialized = true;
@@ -179,7 +183,7 @@ public class CrewMove : Photon.MonoBehaviour {
 	private void GetInput()
 	{
 		if( Input.GetKeyDown(KeyCode.Space)){
-			photonView.RPC ("SetReady", PhotonTargets.All, true);
+			photonView.RPC ("SetReady", PhotonTargets.AllBuffered, true);
 		}
 
 		var moveX = Input.GetAxisRaw("Horizontal") * speed * Time.deltaTime;
@@ -205,10 +209,10 @@ public class CrewMove : Photon.MonoBehaviour {
 			if( device != null )
 			{			
 				if (device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger)) {
-					photonView.RPC ("SetReady", PhotonTargets.All, true);
+					photonView.RPC ("SetReady", PhotonTargets.AllBuffered, true);
 				}
 				if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger)) {
-					photonView.RPC ("SetReady", PhotonTargets.All, true);
+					photonView.RPC ("SetReady", PhotonTargets.AllBuffered, true);
 				}
 			}
 		}
@@ -289,8 +293,7 @@ public class CrewMove : Photon.MonoBehaviour {
 	/// 値の同期
 	/// </summary>
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-	//	if( myMuscle == null )
-		if( true )
+		if( myMuscle == null )
 		{
 			return;
 		}
@@ -298,16 +301,20 @@ public class CrewMove : Photon.MonoBehaviour {
 		if (stream.isWriting) {
 			//データの送信
 			stream.SendNext(myMuscle.joy_rate);
-			//	stream.SendNext (playerSettingDefined);
+			stream.SendNext (ready);
+			stream.SendNext (isActiveViveControllers);
 		} else {
 			//データの受信
 			myMuscle.joy_rate = (float)stream.ReceiveNext();
-		//	playerSettingDefined = (bool)stream.ReceiveNext ();
-		//	if (!photonView.isMine) {
-		//		playerSettingDefined = true;
-		//	}
+			ready = (bool)stream.ReceiveNext ();
+			isActiveViveControllers = (bool)stream.ReceiveNext ();
 		}
 
-		Debug.Log( "クライアント" + PhotonNetwork.player.ID.ToString() + "上の オーナーID" + photonView.ownerId.ToString() + "の上昇率=" + myMuscle.joy_rate.ToString());
+		string str = photonView.isMine ? "[YOU]" : "[OTHER]";
+		str += "ID[ " + PhotonNetwork.player.ID.ToString() + " ] ";
+		str += " ready=[ " + ready.ToString() + " ] ";
+		str += " isActiveViveControllers=[" + isActiveViveControllers.ToString()  + " ]";
+
+		Debug.Log(str);
 	}
 }

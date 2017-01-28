@@ -137,14 +137,15 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 					if( crew == null )
 					{
 						Debug.Log("プレイヤーがnull");
-						continue;			
+						return;			
+					}
+
+					if (!crew.handInitialized) {
+						return;
 					}
 
 					for( int j=0 ; j < crew.handCount ; j++ )
 					{
-						if (!crew.handInitialized) {
-							return;
-						}
 						var h = crew.GetHand( j );
 						if( h == null )
 						{
