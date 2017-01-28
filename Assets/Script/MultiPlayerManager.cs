@@ -168,6 +168,22 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				}
 				defineHandObjects = true;
 
+				// 相手のトラックオブジェクトコンポーネント無効化
+				hands.ForEach( h => {
+					var pv = h.GetComponent<PhotonView>();
+					if( pv != null )
+					{
+						if( !pv.isMine )
+						{
+							var to = h.GetComponent<SteamVR_TrackedObject>();
+							if( to != null )
+							{
+								to.enabled = false;
+							}
+						}
+					}
+				} );
+
 				Debug.LogError("手の数が揃いました！ 手の数 -> [ " + hands.Count.ToString() + " ]");
 			}
 				
