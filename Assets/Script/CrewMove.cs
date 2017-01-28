@@ -284,7 +284,18 @@ public class CrewMove : Photon.MonoBehaviour {
 	/// </summary>
 	public Transform GetHand( int handIdx )
 	{	
-		return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] );
+		if (photonView.isMine) {
+			var key = (hands [handIdx].gameObject.activeInHierarchy ? hands [handIdx].transform : dummyHands [handIdx]);
+			Debug.Log ("[YOU] idx[ " + handIdx.ToString () + " ]のhandは[" + key.ToString () + "]");
+			return key;
+		} else {
+			var key = ( isActiveViveControllers ? hands [handIdx].transform : dummyHands [handIdx]);
+			Debug.Log ("[OTHER] idx[ " + handIdx.ToString () + " ]のhandは[" + key.ToString () + "]");
+			return key;
+
+		}
+
+		//return (hands[ handIdx ].gameObject.activeInHierarchy ? hands[ handIdx ].transform : dummyHands[ handIdx ] );
 	}
 
 
