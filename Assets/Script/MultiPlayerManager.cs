@@ -127,7 +127,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				hands.Clear();
 
 				if (cList.Count < playerNumNeeded) {
-					Debug.LogWarning ("プレイヤー数不足[ " + cList.Count.ToString()  + " / " + playerNumNeeded.ToString() + " ]");
+				//	Debug.LogWarning ("プレイヤー数不足[ " + cList.Count.ToString()  + " / " + playerNumNeeded.ToString() + " ]");
 					return;
 				}
 
