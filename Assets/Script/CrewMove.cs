@@ -106,12 +106,13 @@ public class CrewMove : Photon.MonoBehaviour {
 			// 自分の場合
 			var waitCount = 0;
 			var maxWait = 10;
+			bool allHandActive = true;
+
 			while (true) {
 				if (waitCount >= maxWait || Input.GetKey (KeyCode.D)) {
 					break;
 				}
 
-				bool allHandActive = true;
 				for (int i = 0; i < hands.Count; i++) {
 					var h = hands [i];
 					if (!h.gameObject.activeInHierarchy) {
@@ -122,7 +123,6 @@ public class CrewMove : Photon.MonoBehaviour {
 
 				if (allHandActive) {
 					Debug.Log ("すべてのViveコントローラーを検出");
-					photonView.RPC ("SetViveControllerStatus", PhotonTargets.All, true);
 					break;
 				}
 
@@ -131,11 +131,13 @@ public class CrewMove : Photon.MonoBehaviour {
 				waitCount++;
 			}
 
+
 			// Viveコントローラが無効だったらダミーハンドを使用
 			dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
 			Debug.LogWarning ("あなたは" + (isActiveAndEnabled ? "Viveコントローラ" : "キーボード") + "で操作します");
 
 			photonView.RPC ("SetReady", PhotonTargets.All, false);
+			photonView.RPC ("SetViveControllerStatus", PhotonTargets.All, allHandActive);
 		} else {
 			// 相手の場合
 			while (!GameManager.instance.singleMode && !playerSettingDefined) {
@@ -244,6 +246,7 @@ public class CrewMove : Photon.MonoBehaviour {
 	[PunRPC]
 	void SetReady(bool value)
 	{
+		Debug.Log ("RPC(SetReady) " + (photonView.isMine ? "あなた" : "相手") + "の呼び出し");
 		Debug.Log ("PhotonViewID[ " + photonView.viewID.ToString () + " ]のreadyを" + value.ToString ());
 		playerSettingDefined = true;
 		ready = value;
@@ -252,6 +255,7 @@ public class CrewMove : Photon.MonoBehaviour {
 	[PunRPC]
 	void SetViveControllerStatus( bool key )
 	{
+		Debug.Log ("RPC(SetViveControllerStatus) " + (photonView.isMine ? "あなた" : "相手") + "の呼び出し");
 		isActiveViveControllers = key;
 		if (isActiveViveControllers) {
 			Debug.Log ("PhotonViewID[ " + photonView.viewID.ToString () + " ]のプレイヤーはViveを使用します");
