@@ -171,7 +171,7 @@ public class FallItem : Photon.MonoBehaviour {
 
 		Muscle.instance.ChangeRate(positive);
 
-		if (effectOngoing == null) {
+		if (effect != null && effectOngoing == null) {
 			effectOngoing = Instantiate (effect);
 			effectOngoing.transform.position = transform.position;
 			effectOngoing.transform.SetParent( Muscle.instance.transform, true );
