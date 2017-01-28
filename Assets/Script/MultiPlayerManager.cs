@@ -20,6 +20,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 
 	GameObject bag;
 
+	public Material safeLineMat;
+
 	/// <summary>
 	/// ゲームを開始するのに必要なプレイヤー数
 	/// </summary>
@@ -147,7 +149,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 						// ラインレンダラー付与
 						if (h.GetComponent<LineRenderer> () == null) {
 							var lr = h.gameObject.AddComponent<LineRenderer> ();
-							lr.SetWidth (0.1f, 0.1f);
+							lr.SetWidth (0.5f, 0.5f);
+							lr.material = safeLineMat;
 						}
 						hands.Add( h );
 					}
