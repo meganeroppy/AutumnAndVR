@@ -47,7 +47,11 @@ public class TriangleDetect : MonoBehaviour
 
 		if( dot_12 > 0 && dot_13 > 0 ) {
 			//三角形の内側に点がある
-			return true;
+
+			var averageHeight = (A.y + B.y + C.y) / 3;
+			if (Mathf.Abs (averageHeight - P.y) < 0.25f ){
+				return true;
+			}
 		}
 
 		//三角形の外側に点がある
