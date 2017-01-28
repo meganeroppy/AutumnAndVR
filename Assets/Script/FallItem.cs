@@ -50,6 +50,10 @@ public class FallItem : Photon.MonoBehaviour {
 
 	public bool inParentTransform = false;
 
+	public Material fallLine_good;
+
+	public Material fallLine_bad;
+
 	/// <summary>
 	/// モデル
 	/// </summary>
@@ -77,6 +81,18 @@ public class FallItem : Photon.MonoBehaviour {
 			// 親なしにする
 			transform.parent = null;
 		}
+
+		DrawFallLine ();
+	}
+
+	void DrawFallLine()
+	{
+		var lr = gameObject.AddComponent<LineRenderer> ();
+		lr.SetPosition (0, transform.position + Vector3.down * 10f);
+		lr.SetPosition (1, transform.position + Vector3.down * 20f);
+		lr.material = isGoodItem ? fallLine_good : fallLine_bad;
+		var width = isGoodItem ? 0.4f : 0.2f;
+		lr.SetWidth (width, 0f);
 	}
 
 	// Update is called once per frame
