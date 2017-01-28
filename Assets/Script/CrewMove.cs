@@ -313,8 +313,7 @@ public class CrewMove : Photon.MonoBehaviour {
 	/// 値の同期
 	/// </summary>
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-	//	if( myMuscle == null )
-		if( true )	{
+		if (myMuscle == null) {
 			return;
 		}
 
@@ -325,16 +324,18 @@ public class CrewMove : Photon.MonoBehaviour {
 		//	stream.SendNext (isActiveViveControllers);
 		} else {
 			//データの受信
-			myMuscle.joy_rate = (float)stream.ReceiveNext();
+			myMuscle.joy_rate = (float)stream.ReceiveNext(); 
 		//	ready = (bool)stream.ReceiveNext ();
 		//	isActiveViveControllers = (bool)stream.ReceiveNext ();
 		}
 
+		/*
 		string str = photonView.isMine ? "[YOU]" : "[OTHER]";
 		str += "ID[ " + PhotonNetwork.player.ID.ToString() + " ] ";
 		str += " ready=[ " + ready.ToString() + " ] ";
 		str += " isActiveViveControllers=[" + isActiveViveControllers.ToString()  + " ]";
 
 		Debug.Log(str);
+		*/
 	}
 }
