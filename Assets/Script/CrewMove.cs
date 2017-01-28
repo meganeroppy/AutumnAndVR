@@ -301,13 +301,13 @@ public class CrewMove : Photon.MonoBehaviour {
 		if (stream.isWriting) {
 			//データの送信
 			stream.SendNext(myMuscle.joy_rate);
-			stream.SendNext (ready);
-			stream.SendNext (isActiveViveControllers);
+		//	stream.SendNext (ready);
+		//	stream.SendNext (isActiveViveControllers);
 		} else {
 			//データの受信
 			myMuscle.joy_rate = (float)stream.ReceiveNext();
-			ready = (bool)stream.ReceiveNext ();
-			isActiveViveControllers = (bool)stream.ReceiveNext ();
+		//	ready = (bool)stream.ReceiveNext ();
+		//	isActiveViveControllers = (bool)stream.ReceiveNext ();
 		}
 
 		string str = photonView.isMine ? "[YOU]" : "[OTHER]";
