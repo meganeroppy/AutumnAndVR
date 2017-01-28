@@ -293,8 +293,8 @@ public class CrewMove : Photon.MonoBehaviour {
 	/// 値の同期
 	/// </summary>
 	void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-		if( myMuscle == null )
-		{
+	//	if( myMuscle == null )
+		if( true )	{
 			return;
 		}
 
