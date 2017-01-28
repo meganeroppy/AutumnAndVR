@@ -134,8 +134,8 @@ public class CrewMove : Photon.MonoBehaviour {
 			}
 				
 			// Viveコントローラが無効だったらダミーハンドを使用
-			dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
-			Debug.LogWarning ("あなたは" + (isActiveAndEnabled ? "Viveコントローラ" : "キーボード") + "で操作します");
+			dummyHands.ForEach( h => { h.gameObject.SetActive( !allHandActive ); } );
+			Debug.LogWarning ("あなたは" + (allHandActive ? "Viveコントローラ" : "キーボード") + "で操作します");
 
 			photonView.RPC ("SetReady", PhotonTargets.All, false);
 			photonView.RPC ("SetViveControllerStatus", PhotonTargets.All, allHandActive);
@@ -149,7 +149,7 @@ public class CrewMove : Photon.MonoBehaviour {
 
 			// Viveコントローラが無効だったらダミーハンドを使用
 			dummyHands.ForEach( h => { h.gameObject.SetActive( !isActiveViveControllers ); } );
-			Debug.LogWarning ("相手のプレイヤーは" + (isActiveAndEnabled ? "Viveコントローラ" : "キーボード") + "で操作します");
+			Debug.LogWarning ("相手のプレイヤーは" + (isActiveViveControllers ? "Viveコントローラ" : "キーボード") + "で操作します");
 		}
 
 		handInitialized = true;
