@@ -46,6 +46,8 @@ public class FallItem : Photon.MonoBehaviour {
 
 	public GameObject[] effects;
 
+	private GameObject effectOngoing;
+
 	public bool inParentTransform = false;
 
 	/// <summary>
@@ -73,7 +75,7 @@ public class FallItem : Photon.MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		UpdatePosition();
+	//	UpdatePosition();
 		UpdateRotation();
 		UpdateLifeTimer();
 	}
@@ -83,7 +85,7 @@ public class FallItem : Photon.MonoBehaviour {
 	/// </summary>
 	void UpdatePosition()
 	{
-		transform.Translate( Vector3.down * fallingSpeed );
+		transform.Translate( Vector3.down * fallingSpeed * Time.deltaTime);
 	}
 
 	/// <summary>
@@ -91,7 +93,7 @@ public class FallItem : Photon.MonoBehaviour {
 	/// </summary>
 	void UpdateRotation()
 	{
-		transform.Rotate(Vector3.up, 15f * rotationSpeed );
+		transform.Rotate(Vector3.up, 15f * rotationSpeed * Time.deltaTime);
 	}
 
 	/// <summary>
@@ -115,10 +117,10 @@ public class FallItem : Photon.MonoBehaviour {
 	[PunRPC]
 	public void Harvest(bool caught)
 	{
-		GameObject effect = null;
-
 		// 良い結果か
 		bool positive;
+
+		GameObject effect = null;
 
 		if(caught)
 		{
@@ -134,7 +136,7 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = true;
 
 				// キャッチするべきアイテムのとき
-				effect = Instantiate( effects[(int)EffectType.Catch] );
+				effect = effects [(int)EffectType.Catch];
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -147,7 +149,7 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = true;
 
 				// 避けるべきアイテム
-				effect = Instantiate( effects[(int)EffectType.Happy] );
+				effect = effects [(int)EffectType.Happy];
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -156,18 +158,26 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = false;
 
 				// キャッチするべきアイテム
-				effect = Instantiate( effects[(int)EffectType.Damage] );	
+				effect = effects[(int)EffectType.Damage];	
 			}				
 		}
 
 		Muscle.instance.ChangeRate(positive);
 
-		if( effect != null )
-		{
-			effect.transform.position = transform.position;
+		if (effectOngoing == null) {
+			effectOngoing = Instantiate (effect);
+			effectOngoing.transform.position = transform.position;
+			effectOngoing.transform.SetParent( Muscle.instance.transform, true );
 		}
 
 		harvested = true;
 		model.SetActive(false);
+	}
+
+	void OnDestroy()
+	{
+		if (effectOngoing != null) {
+			Destroy (effectOngoing);
+		}
 	}
 }

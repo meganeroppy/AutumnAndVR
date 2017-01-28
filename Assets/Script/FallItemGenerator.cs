@@ -18,11 +18,6 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 	/// </summary>
 	public Vector2 diffRange;
 
-	/// <summary>
-	/// イガグリ
-	/// </summary>
-	public GameObject fallItem;
-
 	AudioSource myAudio;
 
 	void Awake()
