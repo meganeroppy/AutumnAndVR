@@ -167,7 +167,7 @@ public class InfoText : Photon.MonoBehaviour {
 			var rate = Muscle.instance.joy_rate;
 			rate = Mathf.Round( rate * 10) / 10;
 
-			str = rate.ToString();
+			str = "そくど x" + rate.ToString();
 
 			break;
 		}

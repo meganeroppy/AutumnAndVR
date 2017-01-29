@@ -46,7 +46,13 @@ public class FallItem : Photon.MonoBehaviour {
 
 	public GameObject[] effects;
 
+	private GameObject effectOngoing;
+
 	public bool inParentTransform = false;
+
+	public Material fallLine_good;
+
+	public Material fallLine_bad;
 
 	/// <summary>
 	/// モデル
@@ -64,10 +70,29 @@ public class FallItem : Photon.MonoBehaviour {
 
 		Debug.Log("プレイヤーID" + photonView.ownerId.ToString() + "のアイテムを生成");
 
+
+	}
+
+	void Start()
+	{
 		if (inParentTransform) {
-			// 生成器を親にセット
+			// 生成器を親にセット(移動目的)
 			transform.SetParent (FallItemGenerator.instance.transform);
+			// 親なしにする
+			transform.parent = null;
 		}
+
+		DrawFallLine ();
+	}
+
+	void DrawFallLine()
+	{
+		var lr = gameObject.AddComponent<LineRenderer> ();
+		lr.SetPosition (0, transform.position + Vector3.down * 10f);
+		lr.SetPosition (1, transform.position + Vector3.down * 20f);
+		lr.material = isGoodItem ? fallLine_good : fallLine_bad;
+		var width = isGoodItem ? 0.4f : 0.2f;
+		lr.SetWidth (width, 0f);
 	}
 
 	// Update is called once per frame
@@ -83,7 +108,7 @@ public class FallItem : Photon.MonoBehaviour {
 	/// </summary>
 	void UpdatePosition()
 	{
-		transform.Translate( Vector3.down * fallingSpeed );
+		transform.Translate( Vector3.down * fallingSpeed * Time.deltaTime);
 	}
 
 	/// <summary>
@@ -91,7 +116,7 @@ public class FallItem : Photon.MonoBehaviour {
 	/// </summary>
 	void UpdateRotation()
 	{
-		transform.Rotate(Vector3.up, 15f * rotationSpeed );
+		transform.Rotate(Vector3.up, 15f * rotationSpeed * Time.deltaTime);
 	}
 
 	/// <summary>
@@ -115,10 +140,10 @@ public class FallItem : Photon.MonoBehaviour {
 	[PunRPC]
 	public void Harvest(bool caught)
 	{
-		GameObject effect = null;
-
 		// 良い結果か
 		bool positive;
+
+		GameObject effect = null;
 
 		if(caught)
 		{
@@ -134,7 +159,7 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = true;
 
 				// キャッチするべきアイテムのとき
-				effect = Instantiate( effects[(int)EffectType.Catch] );
+				effect = effects [(int)EffectType.Catch];
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -147,7 +172,7 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = true;
 
 				// 避けるべきアイテム
-				effect = Instantiate( effects[(int)EffectType.Happy] );
+				effect = effects [(int)EffectType.Happy];
 
 				GetComponent<AudioSource>().Play();
 			}
@@ -156,18 +181,26 @@ public class FallItem : Photon.MonoBehaviour {
 				positive = false;
 
 				// キャッチするべきアイテム
-				effect = Instantiate( effects[(int)EffectType.Damage] );	
+				effect = effects[(int)EffectType.Damage];	
 			}				
 		}
 
 		Muscle.instance.ChangeRate(positive);
 
-		if( effect != null )
-		{
-			effect.transform.position = transform.position;
+		if (effect != null && effectOngoing == null) {
+			effectOngoing = Instantiate (effect);
+			effectOngoing.transform.position = transform.position;
+			effectOngoing.transform.SetParent( Muscle.instance.transform, true );
 		}
 
 		harvested = true;
 		model.SetActive(false);
+	}
+
+	void OnDestroy()
+	{
+		if (effectOngoing != null) {
+			Destroy (effectOngoing);
+		}
 	}
 }
