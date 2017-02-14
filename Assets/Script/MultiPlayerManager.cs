@@ -203,6 +203,8 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 				{
 					continue;
 				}
+
+				// TODO: キャッチ判定が厳しすぎる気がするので要調整
 				var inside = SquareDetector.IsInside( hands[0].position, hands[1].position, hands[2].position, hands[3].position, item.transform.position );
 				if( inside )
 				{
@@ -216,13 +218,7 @@ public class MultiPlayerManager : Photon.MonoBehaviour
 					}
 				}
 			}
-				
-
 		}
-
-
-
-
 	}
 
 	/// <summary>

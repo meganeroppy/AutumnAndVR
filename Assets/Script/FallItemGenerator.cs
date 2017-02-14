@@ -2,11 +2,12 @@
 using System.Collections;
 
 /// <summary>
-/// イガグリ生成装置
+/// 落下アイテム生成装置
 /// </summary>
 public class FallItemGenerator : Photon.MonoBehaviour {
 
 	public static FallItemGenerator instance;
+
 	/// <summary>
 	/// 生成頻度
 	/// </summary>
@@ -34,7 +35,6 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 		transform.localPosition = Vector3.zero;
 	}
 
-	// Update is called once per frame
 	void Update () 
 	{
 		if( !GameManager.instance.running)
@@ -60,6 +60,7 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 
 	/// <summary>
 	/// 一定間隔でtrueを返す
+	/// TODO: 進行度に合わせて頻度の短縮など実装する
 	/// </summary>
 	bool CheckTimer()
 	{
@@ -74,6 +75,7 @@ public class FallItemGenerator : Photon.MonoBehaviour {
 
 	/// <summary>
 	/// 落下アイテムを生成
+	/// TODO: 進行度に合わせて複数アイテムの生成など実装する
 	/// </summary>
 	void Generate()
 	{
