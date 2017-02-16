@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 /// <summary>
 /// ゲーム全体の変数を管理
+/// 各ところに困ったタスクはここに書く
+/// TODO: 雲の動きがただ事ではない現象を改善
 /// </summary>
 public class GameManager : Photon.MonoBehaviour 
 {
